@@ -1,0 +1,65 @@
+# ========================
+# Visual Studio / .NET Core
+# ========================
+
+# Build kết quả
+bin/
+obj/
+out/
+
+# Files cá nhân của Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+*.tlog
+
+# Packages
+*.nupkg
+*.snupkg
+*.nuspec
+*.psmdcp
+
+# Rider
+.idea/
+
+# Dotnet publish
+publish/
+
+# Thư mục test/coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Cấu hình local
+appsettings*.json
+*.local
+
+# ========================
+# Node / Vue 3
+# ========================
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build Vue
+dist/
+build/
+.vite/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Cache
+.cache/

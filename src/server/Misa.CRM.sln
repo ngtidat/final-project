@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misa.CRM.Api", "Misa.CRM.Api\Misa.CRM.Api.csproj", "{49ACE25E-DD01-4057-9D30-C0568AF7B457}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misa.CRM.Data", "Misa.CRM.Data\Misa.CRM.Data.csproj", "{C19DC8AE-CCE1-4786-B6C6-61E160CEED6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misa.CRM.Business", "Misa.CRM.Business\Misa.CRM.Business.csproj", "{7E5FDB52-700E-4B8B-8DA4-FA1399E83479}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49ACE25E-DD01-4057-9D30-C0568AF7B457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49ACE25E-DD01-4057-9D30-C0568AF7B457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49ACE25E-DD01-4057-9D30-C0568AF7B457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49ACE25E-DD01-4057-9D30-C0568AF7B457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C19DC8AE-CCE1-4786-B6C6-61E160CEED6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C19DC8AE-CCE1-4786-B6C6-61E160CEED6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C19DC8AE-CCE1-4786-B6C6-61E160CEED6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C19DC8AE-CCE1-4786-B6C6-61E160CEED6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E5FDB52-700E-4B8B-8DA4-FA1399E83479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E5FDB52-700E-4B8B-8DA4-FA1399E83479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E5FDB52-700E-4B8B-8DA4-FA1399E83479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E5FDB52-700E-4B8B-8DA4-FA1399E83479}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
