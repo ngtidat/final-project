@@ -15,4 +15,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Misa.CRM.Data\Misa.CRM.Data.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -10,10 +10,17 @@
     <Folder Include="Common\" />
     <Folder Include="Dtos\" />
     <Folder Include="Entities\" />
+    <Folder Include="Entities\Common\" />
+    <Folder Include="Helpers\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="Interfaces\Repositories\" />
+    <Folder Include="Interfaces\Services\" />
     <Folder Include="Mappings\" />
     <Folder Include="MisaAttributes\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
   </ItemGroup>
 
 </Project>
