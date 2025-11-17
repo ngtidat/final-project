@@ -1,12 +1,12 @@
-using System;
+using Misa.CRM.Business.Common.Models;
 
 namespace Misa.CRM.Business.Interfaces.Services;
 
-public interface IBaseService<TDto> where TDto : class
+public interface IBaseService<T, TDto> where T : class where TDto : class
 {
     IEnumerable<TDto> GetAll();
 
-    // IEnumerable<PaginatedResult<TDto>> Paginate(int pageNumber, int pageSize, out int totalRecords);
+    IEnumerable<PaginatedResult<TDto>> Paginate(int pageNumber, int pageSize, out int totalRecords);
 
     TDto GetById(Guid id);
 

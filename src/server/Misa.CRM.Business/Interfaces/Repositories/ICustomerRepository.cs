@@ -4,5 +4,5 @@ namespace Misa.CRM.Business.Interfaces.Repositories;
 
 public interface ICustomerRepository: IBaseRepository<Customer>
 {
-    
+    public IEnumerable<Customer> GetCustomersWithTypeAsync();
 }

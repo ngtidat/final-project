@@ -3,11 +3,11 @@ using Misa.CRM.Business.MisaAttributes;
 namespace Misa.CRM.Business.Entities.Common;
 
 [MisaTable("customer")]
-public class Customer : BaseEntity
+public class Customer : BaseInfoEntity
 {
     [MisaColumn("customer_id")]
     [MisaRequired(ErrorMessage = "Customer ID is required")]
-    public new required string Id { get; set; }
+    public required string CustomerId { get; set; }
 
     [MisaColumn("customer_name")]
     [MisaRequired(ErrorMessage = "Customer name is required")]
@@ -79,5 +79,17 @@ public class Customer : BaseEntity
     public string? SingleEntrySettlement { get; set; }                   
 
     [MisaColumn("multi_line_entry")]
-    public string? MultiLineEntry { get; set; }                            
+    public string? MultiLineEntry { get; set; }     
+
+    [MisaColumn("last_purchase_date")]
+    public DateTime? LastPurchaseDate { get; set; }
+
+    [MisaColumn("purchase_items")]
+    public string? PurchaseItems { get; set; }
+
+    [MisaColumn("purchase_item_name")]
+    public string? PurchaseItemName { get; set; } 
+
+    [MisaColumn("shipping_address")]
+    public string? ShippingAddress { get; set; }                      
 }

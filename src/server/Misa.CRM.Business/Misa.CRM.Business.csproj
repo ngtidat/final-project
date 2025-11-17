@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
+    <Folder Include="Common\Models\" />
     <Folder Include="Dtos\" />
+    <Folder Include="Dtos\CustomerType\" />
+    <Folder Include="Dtos\Customer\" />
     <Folder Include="Entities\" />
     <Folder Include="Entities\Common\" />
     <Folder Include="Helpers\" />
@@ -17,10 +20,16 @@
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Mappings\" />
     <Folder Include="MisaAttributes\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
 
 </Project>

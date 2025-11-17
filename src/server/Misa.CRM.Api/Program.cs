@@ -1,4 +1,7 @@
 using Misa.CRM.Business.Interfaces.Repositories;
+using Misa.CRM.Business.Interfaces.Services;
+using Misa.CRM.Business.Mappings;
+using Misa.CRM.Business.Services;
 using Misa.CRM.Data;
 using Misa.CRM.Data.Repositories;
 
@@ -12,8 +15,12 @@ builder.Services.AddControllers();
 
 // Register DI services
 builder.Services.AddSingleton<MisaDbContext>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<ICustomerTypeRepository, CustomerTypeRepository>();
+builder.Services.AddScoped<ICustomerTypeService, CustomerTypeService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 

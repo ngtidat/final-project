@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Misa.CRM.Business.Interfaces.Repositories;
+using Misa.CRM.Business.Interfaces.Services;
 
 namespace Misa.CRM.Api.Controllers;
 
@@ -7,9 +7,9 @@ namespace Misa.CRM.Api.Controllers;
 [ApiController]
 public class CustomerTypeController : ControllerBase
 {
-    private readonly ICustomerTypeRepository _service;
+    private readonly ICustomerTypeService _service;
 
-    public CustomerTypeController(ICustomerTypeRepository service)
+    public CustomerTypeController(ICustomerTypeService service)
     {
         _service = service;
     }
@@ -18,13 +18,6 @@ public class CustomerTypeController : ControllerBase
     public IActionResult GetAll()
     {
         var result = _service.GetAll();
-        return Ok(result);
-    }
-
-    [HttpGet("query")]
-    public IActionResult GetQuery()
-    {
-        var result = _service.getQuery();
         return Ok(result);
     }
 }
