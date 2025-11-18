@@ -1,11 +1,13 @@
 using AutoMapper;
+using Microsoft.VisualBasic;
 using Misa.CRM.Business.Common.Models;
+using Misa.CRM.Business.Dtos;
 using Misa.CRM.Business.Interfaces.Repositories;
 using Misa.CRM.Business.Interfaces.Services;
 
 namespace Misa.CRM.Business.Services;
 
-public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : class where T : class
+public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : BaseDto where T : class
 {
     protected readonly IBaseRepository<T> _repository;
 
@@ -24,7 +26,7 @@ public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : class whe
 
     public int Delete(TDto dto, bool isHardDelete = false)
     {
-    throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public int Delete(IEnumerable<TDto> dtos, bool isHardDelete = false)
@@ -42,10 +44,21 @@ public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : class whe
         throw new NotImplementedException();
     }
 
-    public IEnumerable<PaginatedResult<TDto>> Paginate(int pageNumber, int pageSize, out int totalRecords)
-    {
-        throw new NotImplementedException();
-    }
+    // public PaginatedResult<TDto> Paginate(int pageIndex, int pageSize, string? strSearch, string? sortColumn, int sortDirection)
+    // {
+    //     var dto = (TDto)Activator.CreateInstance(typeof(TDto))!;
+    //     var searchColumns = string.Join(", ", dto.SearchableColumns!);
+    //     var baseQuery = _repository.GetBaseQuery();
+
+    //     var paginatedResult = _repository.Paginate(baseQuery, searchColumns, pageIndex, pageSize, strSearch, sortColumn, sortDirection);
+    //     var mappedItems = _mapper.Map<List<TDto>>(paginatedResult.Items);
+    //     return new PaginatedResult<TDto>(
+    //         pageIndex,
+    //         pageSize,
+    //         mappedItems.Count,
+    //         [.. mappedItems]
+    //     );
+    // }
 
     public int Update(TDto dto)
     {

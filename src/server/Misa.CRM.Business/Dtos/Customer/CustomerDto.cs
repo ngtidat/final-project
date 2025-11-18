@@ -3,7 +3,7 @@ using Misa.CRM.Business.MisaAttributes;
 
 namespace Misa.CRM.Business.Dtos.Customer;
 
-public class CustomerDto : BaseInfoDto
+public class CustomerDto : BaseDto
 {
     [MisaRequired]
     public required string CustomerId { get; set; }
@@ -22,5 +22,7 @@ public class CustomerDto : BaseInfoDto
 
     public string? PurchaseItems { get; set; }
 
-    public string? PurchaseItemName { get; set; }   
+    public string? PurchaseItemName { get; set; }  
+
+    public override string[] SearchableColumns => ["customer_name", "customer_email", "customer_phone"]; 
 }

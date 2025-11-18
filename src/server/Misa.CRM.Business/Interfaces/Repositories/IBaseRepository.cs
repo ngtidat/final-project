@@ -1,12 +1,12 @@
+using Misa.CRM.Business.Common.Models;
+
 namespace Misa.CRM.Business.Interfaces.Repositories;
 
 public interface IBaseRepository<T> where T : class
 {
     IEnumerable<T> GetAll();
 
-    string getQuery();
-
-    // PaginatedResult<T> Paginate(int pageNumber, int pageSize, out int totalRecords);
+    string GetBaseQuery();
 
     T GetById(Guid id);
 

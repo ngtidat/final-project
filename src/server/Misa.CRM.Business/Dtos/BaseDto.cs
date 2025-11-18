@@ -1,6 +1,9 @@
 namespace Misa.CRM.Business.Dtos;
 
-public class BaseDto : BaseInfoDto
+public abstract class BaseDto : BaseInfoDto
 {
-    public Guid Id { get; set; }
+    /// <summary>
+    /// Các cột có thể search, định nghĩa ở DTO con
+    /// </summary>
+    public abstract string[]? SearchableColumns { get; }
 }

@@ -27,4 +27,11 @@ public class CustomerController : ControllerBase
         var customers = _customerService.GetCustomersWithType();
         return Ok(customers);
     }
+
+    [HttpGet("search")]
+    public IActionResult Search([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 100, [FromQuery] string? strSearch = null, [FromQuery] string? sortColumn = "c.created_at", [FromQuery] int sortDirection = 1)
+    {
+        var result = _customerService.Paginate(strSearch, pageIndex, pageSize, sortColumn, sortDirection);
+        return Ok(result);
+    }
 }

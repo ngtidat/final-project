@@ -1,3 +1,4 @@
+using Misa.CRM.Api.Middlewares;
 using Misa.CRM.Business.Interfaces.Repositories;
 using Misa.CRM.Business.Interfaces.Services;
 using Misa.CRM.Business.Mappings;
@@ -33,4 +34,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.Run();

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Dtos.Customer;
 using Misa.CRM.Business.Entities.Common;
 using Misa.CRM.Business.Interfaces.Repositories;
@@ -14,8 +15,20 @@ public class CustomerService : BaseService<Customer, CustomerDto>, ICustomerServ
         _customerRepository = repository;
     }
 
-    public IEnumerable<CustomerDto> GetCustomersWithType ()
+    public IEnumerable<CustomerDto> GetCustomersWithType()
     {
         return _mapper.Map<IEnumerable<CustomerDto>>(_customerRepository.GetCustomersWithTypeAsync());
+    }
+
+    public PaginatedResult<CustomerDto> Paginate(string? strSearch, int pageIndex, int pageSize, string? sortColumn, int sortDirection)
+    {
+        var result = _customerRepository.SearchAndPaginate(strSearch, pageIndex, pageSize, sortColumn, sortDirection);
+
+        return new PaginatedResult<CustomerDto>(
+            result.PageIndex,
+            result.PageSize,
+            result.TotalRecords,
+            [.. _mapper.Map<IEnumerable<CustomerDto>>(result.Items)]
+        );
     }
 }

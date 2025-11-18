@@ -1,4 +1,6 @@
+using System.Data;
 using Dapper;
+using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Helpers;
 using Misa.CRM.Business.Interfaces.Repositories;
 
@@ -15,13 +17,10 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     public IEnumerable<T> GetAll()
     {
-        // Lấy tên bảng
         var tableName = DapperMetadataHelper.GetTableName<T>();
 
-        // Lấy danh sách cột có attribute / override
         var columnMappings = DapperMetadataHelper.GetColumnMappings<T>();
 
-        // Build SELECT: customer_type_id AS Id, customer_type_name AS CustomerTypeName
         var selectColumns = string.Join(", ", columnMappings.Select(c => $"{c.Value} AS {c.Key}"));
 
         var sql = $"SELECT {selectColumns} FROM {tableName}";
@@ -30,20 +29,12 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return connection.Query<T>(sql);
     }
 
-    public string getQuery()
+    public virtual string GetBaseQuery()
     {
-        // Lấy tên bảng
         var tableName = DapperMetadataHelper.GetTableName<T>();
-
-        // Lấy danh sách cột có attribute / override
         var columnMappings = DapperMetadataHelper.GetColumnMappings<T>();
-
-        // Build SELECT: customer_type_id AS Id, customer_type_name AS CustomerTypeName
         var selectColumns = string.Join(", ", columnMappings.Select(c => $"{c.Value} AS {c.Key}"));
-
-        var sql = $"SELECT {selectColumns} FROM {tableName}";
-
-        return sql;
+        return $"SELECT {selectColumns} FROM {tableName}";
     }
 
     public T GetById(Guid id)
@@ -51,10 +42,34 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         throw new NotImplementedException();
     }
 
-    // public PaginatedResult<T> Paginate(int pageNumber, int pageSize, out int totalRecords)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public PaginatedResult<T> Paginate(string baseQuery, string searchColumns, int pageIndex, int pageSize, string? strSearch, string? sortColumn, int sortDirection)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("p_base_query", baseQuery);
+        parameters.Add("p_search_columns", searchColumns);
+        parameters.Add("p_page_index", pageIndex);
+        parameters.Add("p_page_size", pageSize);
+        parameters.Add("p_search", strSearch);
+        parameters.Add("p_sort_column", sortColumn);
+        parameters.Add("p_sort_direction", sortDirection);
+
+        using var _connection = _context.CreateConnection();
+        var items = _connection.QueryMultiple(
+            "proc_paginating_items",
+            parameters,
+            commandType: CommandType.StoredProcedure
+        );
+
+        var totalObj = items.ReadFirst<dynamic>();
+        int totalRecords = (int)totalObj.total_records;
+
+        return new PaginatedResult<T>(
+            pageIndex,
+            pageSize,
+            totalRecords,
+            [.. items.Read<T>().ToList()]
+        );
+    }
 
     public int Add(T entity)
     {
