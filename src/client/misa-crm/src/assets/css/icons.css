@@ -1,0 +1,40 @@
+.icon {
+    mask-image: url("@/assets/images/ICON.svg");
+    mask-repeat: no-repeat;
+    display: block;
+    background-color: rgb(0, 0, 0);
+    width: 16px;
+    height: 16px;
+}
+
+.icon-house {
+    mask-position: 0 -272px;
+}
+
+.icon-customer {
+    mask-position: -224px -288px;
+}
+
+.icon-opportunity {
+    mask-position: -80px -48px;
+}
+
+.icon-price {
+    mask-position: -64px -48px;
+}
+
+.icon-order {
+    mask-position: -144px -48px;
+}
+
+.icon-merchandise {
+    mask-position: -144px -240px;
+}
+
+.icon-circle-chart {
+    mask-position: -32px -288px;
+}
+
+.icon-menu {
+    mask-position: -48px -272px;
+}

@@ -1,0 +1,114 @@
+.d-flex {
+  display: flex;
+}
+
+.relative {
+  position: relative;
+}
+
+.flex-direction-column {
+  flex-direction: column;
+}
+
+.flex-direction-row {
+  flex-direction: row;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-space-between {
+  justify-content: space-between;
+}
+
+.justify-content-space-around {
+  justify-content: space-around;
+}
+
+.justify-content-end {
+  justify-content: end;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.icon-32 {
+  width: 32px;
+  height: 32px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.br-4 {
+  border-radius: 4px !important;
+}
+
+.br-6 {
+  border-radius: 6px !important;
+}
+
+.br-8 {
+  border-radius: 8px !important;
+}
+
+.border-none {
+  border: none;
+}
+/* 
+input,
+select,
+textarea {
+  padding: 2px 16px 0 16px;
+  border-radius: 3px;
+  border: 1px solid #dddde4;
+  font-size: 14px !important;
+}
+
+option {
+  border: none;
+  cursor: pointer;
+} */
+
+input,
+select {
+  line-height: 32px !important;
+  height: 32px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+input:focus {
+  outline: none;
+}
+
+input, textarea {
+  caret-color: #000;
+  color: #000 !important;
+}
+
+.btn {
+  padding: 7px 20px;
+  cursor: pointer;
+}
+
+.btn-submit {
+  color: #ffffff;
+}
+
+.bg-primary {
+  background-color: #007bff; 
+}
