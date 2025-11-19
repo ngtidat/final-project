@@ -14,6 +14,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowClient",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173") // URL của client
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 // Register DI services
 builder.Services.AddSingleton<MisaDbContext>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -31,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowClient");
 
 app.UseHttpsRedirection();
 app.MapControllers();
