@@ -1,5 +1,5 @@
 <template>
-    <div class="topbar">
+    <div class="topbar d-flex justify-content-space-between align-items-center">
         <slot></slot>
     </div>
 </template>

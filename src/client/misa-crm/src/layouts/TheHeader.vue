@@ -66,7 +66,6 @@
 <style scoped>
 .header-container {
     max-height: 48px;
-    max-height: 48px;
     font-size: 13px;
     margin: 0px 12px 0px 36px;
 }
@@ -93,7 +92,8 @@
 
 .logo:hover,
 .header-title:hover,
-.nav-item:hover {
+.nav-item:hover,
+.avatar:hover {
     cursor: pointer;
 }
 
@@ -105,8 +105,6 @@
 .nav-content {
     margin-left: 8px;
     white-space: nowrap;
-    /* text-overflow: ellipsis;    */
-    /* display: inline-block;  */
 }
 
 .active {

@@ -38,3 +38,27 @@
 .icon-menu {
     mask-position: -48px -272px;
 }
+
+.icon-folder {
+    mask-position: -208px -177px;
+}
+
+.icon-reload {
+    mask-position: -352px -32px;
+}
+
+.icon-angle-down {
+    mask-position: -48px -32px;
+}
+
+.icon-smart-search {
+    mask-position: 0 -1425px;
+}
+
+.icon-statistic {
+    mask-position: -16px -1425px;
+}
+
+.icon-plus {
+    mask-position: -240px -128px;
+}
