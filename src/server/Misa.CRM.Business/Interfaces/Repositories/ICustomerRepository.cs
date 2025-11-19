@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Entities.Common;
 
@@ -8,4 +10,6 @@ public interface ICustomerRepository: IBaseRepository<Customer>
     public IEnumerable<Customer> GetCustomersWithTypeAsync();
 
     public PaginatedResult<Customer> SearchAndPaginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection);
+
+    public ImportResult Import(List<Customer> customers);
 }

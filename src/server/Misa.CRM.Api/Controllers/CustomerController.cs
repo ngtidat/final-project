@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Misa.CRM.Api.Common.Responses;
+using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Dtos.Customer;
 using Misa.CRM.Business.Interfaces.Services;
 
@@ -71,6 +72,14 @@ public class CustomerController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("create")]
+    public IActionResult Create([FromBody] CustomerCreateUpdateDto customerCreateUpdateDto)
+    {
+        var result = _customerService.Add(customerCreateUpdateDto);
+        var response = new ApiResponse<int>(data: result);
+        return Ok(response);
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -96,11 +105,22 @@ public class CustomerController : ControllerBase
         return Ok(response);
     }
 
-    // [HttpPost("delete-multiple")]
-    // public IActionResult DeleteMulti(IEnumerable<CustomerDto> customerDto)
-    // {
-    //     var result = _customerService.Delete(customerDto);
-    //     var response = new ApiResponse<int>(data: result);
-    //     return Ok(response);
-    // }
+    [HttpPost("delete-multiple")]
+    public IActionResult DeleteMulti(IEnumerable<string> ids)
+    {
+        var result = _customerService.Delete(ids);
+        var response = new ApiResponse<int>(data: result);
+        return Ok(response);
+    }
+
+    [HttpPost("import")]
+    public IActionResult Import(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("File is empty");
+
+        var result = _customerService.Import(file);
+        var response = new ApiResponse<ImportResult>(data: result);
+        return Ok(response);
+    }
 }

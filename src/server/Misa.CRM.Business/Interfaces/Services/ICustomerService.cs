@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Dtos.Customer;
 using Misa.CRM.Business.Entities.Common;
@@ -9,4 +10,6 @@ public interface ICustomerService : IBaseService<Customer, CustomerDto, Customer
     public IEnumerable<CustomerDto> GetCustomersWithType();
 
     public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection);
+
+    public ImportResult Import(IFormFile file);
 }

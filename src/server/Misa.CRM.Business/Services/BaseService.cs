@@ -67,29 +67,40 @@ public class BaseService<T, TDto, TCreateUpdateDto> : IBaseService<T, TDto, TCre
         {
             var value = prop.GetValue(entity);
 
+            // Required
+            var requiredAttr = prop.GetCustomAttribute<MisaRequiredAttribute>();
+            if (requiredAttr != null)
+            {
+                if (value == null || (value is string strValue && string.IsNullOrWhiteSpace(strValue)))
+                {
+                    throw new RequestValidationException(requiredAttr.ErrorMessage ?? $"{prop.Name} is required");
+                }
+            }
+
             // MaxLength
             var maxLengthAttr = prop.GetCustomAttribute<MisaMaxLengthAttribute>();
-            if (maxLengthAttr != null && value is string str &&
-                str.Length > maxLengthAttr.MaxLength)
+            if (maxLengthAttr != null && value is string maxLengthValue &&
+                maxLengthValue.Length > maxLengthAttr.MaxLength)
             {
                 throw new RequestValidationException(maxLengthAttr.ErrorMessage);
             }
 
             // Email
             var emailAttr = prop.GetCustomAttribute<MisaEmailAttribute>();
-            if (emailAttr != null && value is string email &&
-                !emailAttr.IsValid(email))
+            if (emailAttr != null && value is string emailValue &&
+                !emailAttr.IsValid(emailValue))
             {
                 throw new RequestValidationException(emailAttr.ErrorMessage);
             }
 
             // Phone
             var phoneAttr = prop.GetCustomAttribute<MisaPhoneAttribute>();
-            if (phoneAttr != null && value is string phone &&
-                !phoneAttr.IsValid(phone))
+            if (phoneAttr != null && value is string phoneValue &&
+                !phoneAttr.IsValid(phoneValue))
             {
                 throw new RequestValidationException(phoneAttr.ErrorMessage);
             }
+
 
             // Unique
             // var uniqueAttr = prop.GetCustomAttribute<MisaUniqueAttribute>();

@@ -74,20 +74,85 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
         );
     }
 
-    // public PaginatedResult<Customer> SearchAndPaginate(int pageIndex, int pageSize, string? strSearch, string? sortColumn, int sortDirection)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    // Override Add để dùng proc_add_customer
+    public new int Add(Customer entity)
+    {
+        using var connection = _context.CreateConnection();
 
-    // public PaginatedResult<Customer> SearchWithPaginate(int pageIndex, int pageSize, string? strSearch, string? sortColumn, int sortDirection)
-    // {
-    //     return Paginate(
-    //     CustomerQueries.BaseQuery,
-    //     pageIndex,
-    //     pageSize,
-    //     strSearch,
-    //     sortColumn,
-    //     sortDirection
-    //     );
-    // }
+        // var customerId = connection.ExecuteScalar<string>("SELECT func_cu_gen_customer_id()");
+
+        var parameters = new DynamicParameters();
+        // parameters.Add("p_customer_name")
+        parameters.Add("p_customer_name", entity.CustomerName);
+        parameters.Add("p_customer_address", entity.CustomerAddress);
+        parameters.Add("p_customer_phone", entity.CustomerPhone);
+        parameters.Add("p_customer_email", entity.CustomerEmail);
+        parameters.Add("p_customer_tax_code", entity.CustomerTaxCode);
+        parameters.Add("p_customer_type_id", entity.CustomerTypeId);
+        parameters.Add("p_customer_industry", entity.CustomerIndustry);
+        parameters.Add("p_gender", entity.Gender);
+        parameters.Add("p_other_phone_number", entity.OtherPhoneNumber);
+        parameters.Add("p_last_purchase_date", entity.LastPurchaseDate);
+        parameters.Add("p_purchase_items", entity.PurchaseItems);
+        parameters.Add("p_purchase_item_name", entity.PurchaseItemName);
+        parameters.Add("p_shipping_address", entity.ShippingAddress);
+
+        return connection.Execute(
+            "proc_add_customer",
+            parameters,
+            commandType: CommandType.StoredProcedure
+        );
+    }
+
+    public ImportResult Import(List<Customer> customers)
+    {
+        var result = new ImportResult();
+        result.Total = customers.Count;
+
+        using var connection = _context.CreateConnection();
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            int index = 0;
+            foreach (var customer in customers)
+            {
+                index++;
+                var parameters = new DynamicParameters();
+                parameters.Add("p_customer_name", customer.CustomerName);
+                parameters.Add("p_customer_address", customer.CustomerAddress);
+                parameters.Add("p_customer_phone", customer.CustomerPhone);
+                parameters.Add("p_customer_email", customer.CustomerEmail);
+                parameters.Add("p_customer_tax_code", customer.CustomerTaxCode);
+                parameters.Add("p_customer_type_id", customer.CustomerTypeId);
+                parameters.Add("p_customer_industry", customer.CustomerIndustry);
+                parameters.Add("p_gender", customer.Gender);
+                parameters.Add("p_other_phone_number", customer.OtherPhoneNumber);
+                parameters.Add("p_last_purchase_date", customer.LastPurchaseDate);
+                parameters.Add("p_purchase_items", customer.PurchaseItems);
+                parameters.Add("p_purchase_item_name", customer.PurchaseItemName);
+                parameters.Add("p_shipping_address", customer.ShippingAddress);
+
+                var newId = connection.ExecuteScalar<string>(
+                    "proc_add_customer",
+                    parameters,
+                    commandType: CommandType.StoredProcedure,
+                    transaction: transaction
+                );
+
+                result.Success++;
+            }
+
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
+
+
+        return result;
+    }
 }

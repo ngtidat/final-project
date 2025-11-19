@@ -7,7 +7,6 @@ public class Customer : BaseEntity
 {
     [MisaPrimaryKey("customer_id")]
     [MisaColumn("customer_id")]
-    [MisaRequired(ErrorMessage = "Customer ID is required")]
     public required string CustomerId { get; set; }
 
     [MisaColumn("customer_name")]
