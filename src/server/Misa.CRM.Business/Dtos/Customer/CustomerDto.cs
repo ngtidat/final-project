@@ -24,5 +24,4 @@ public class CustomerDto : BaseDto
 
     public string? PurchaseItemName { get; set; }  
 
-    public override string[] SearchableColumns => ["customer_name", "customer_email", "customer_phone"]; 
 }

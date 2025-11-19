@@ -4,7 +4,7 @@ using Misa.CRM.Business.Entities.Common;
 
 namespace Misa.CRM.Business.Interfaces.Services;
 
-public interface ICustomerService : IBaseService<Customer, CustomerDto>
+public interface ICustomerService : IBaseService<Customer, CustomerDto, CustomerCreateUpdateDto>
 {
     public IEnumerable<CustomerDto> GetCustomersWithType();
 

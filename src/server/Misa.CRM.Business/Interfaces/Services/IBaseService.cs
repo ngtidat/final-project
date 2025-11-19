@@ -1,9 +1,8 @@
-using Misa.CRM.Business.Common.Models;
-using Misa.CRM.Business.Dtos;
+using Misa.CRM.Business.Entities;
 
 namespace Misa.CRM.Business.Interfaces.Services;
 
-public interface IBaseService<T, TDto> where T : class where TDto : BaseDto
+public interface IBaseService<T, TDto, TCreateUpdateDto> where T : BaseEntity where TDto : class where TCreateUpdateDto: class
 {
     /// <summary>
     /// Lấy tất cả bản ghi
@@ -16,21 +15,21 @@ public interface IBaseService<T, TDto> where T : class where TDto : BaseDto
     /// </summary>
     /// <param name="id">Mã bản ghi</param>
     /// <returns></returns>
-    TDto GetById(Guid id);
+    TDto GetById(string id);
 
     /// <summary>
     /// Thêm mới bản ghi
     /// </summary>
     /// <param name="dto">Dữ liệu form input từ người dùng</param>
     /// <returns></returns>
-    int Add(TDto dto);
+    int Add(TCreateUpdateDto dto);
 
     /// <summary>
     /// Cập nhật bản ghi
     /// </summary>
     /// <param name="dto">Dữ liệu form input từ người dùng</param>
     /// <returns></returns>
-    int Update(TDto dto);
+    int Update(string id, TCreateUpdateDto dto);
 
     /// <summary>
     /// Xóa một bản bản ghi
@@ -38,7 +37,7 @@ public interface IBaseService<T, TDto> where T : class where TDto : BaseDto
     /// <param name="dto">Dữ liệu bản ghi</param>
     /// <param name="isHardDelete">Loại xóa: mềm(false) hay cứng</param>
     /// <returns></returns>
-    int Delete(TDto dto, bool isHardDelete = false);
+    int Delete(string id, bool isHardDelete = false);
 
     /// <summary>
     /// Xóa nhiều bản ghi
@@ -46,5 +45,5 @@ public interface IBaseService<T, TDto> where T : class where TDto : BaseDto
     /// <param name="dtoss">Các bản ghi muốn xóa</param>
     /// <param name="isHardDelete">Loại xóa: mềm hay cứng</param>
     /// <returns></returns>
-    int Delete(IEnumerable<TDto> dtos, bool isHardDelete = false);
+    int Delete(IEnumerable<string> ids, bool isHardDelete = false);
 }

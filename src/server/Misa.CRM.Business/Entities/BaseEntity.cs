@@ -1,6 +1,6 @@
 namespace Misa.CRM.Business.Entities;
 
-public class BaseEntity : BaseInfoEntity
+public abstract class BaseEntity : BaseInfoEntity
 {
-    public Guid Id { get; set; }
+    // public Guid Id { get; set; }
 }

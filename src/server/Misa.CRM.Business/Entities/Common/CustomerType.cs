@@ -4,7 +4,7 @@ namespace Misa.CRM.Business.Entities.Common;
 
 [MisaTable("customer_type")]
 // [MisaColumnOverride("Id", "customer_type_id")]
-public class CustomerType : BaseInfoEntity
+public class CustomerType : BaseEntity
 {
     [MisaColumn("customer_type_id")]
     public Guid CustomerTypeId { get; set; }

@@ -14,6 +14,9 @@ public class MappingProfile : Profile
         CreateMap<Customer, CustomerDto>()
             .ForMember(dest => dest.CustomerType, opt => opt.MapFrom(src => src.CustomerType != null ? src.CustomerType : null));
 
+        CreateMap<CustomerCreateUpdateDto, Customer>()
+            .ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId != null ? src.CustomerTypeId : null));
+
         // CustomerType Mapping
         CreateMap<CustomerType, CustomerTypeDto>();
     }

@@ -1,5 +1,3 @@
-using Misa.CRM.Business.Common.Models;
-
 namespace Misa.CRM.Business.Interfaces.Repositories;
 
 public interface IBaseRepository<T> where T : class
@@ -8,13 +6,15 @@ public interface IBaseRepository<T> where T : class
 
     string GetBaseQuery();
 
-    T GetById(Guid id);
+    T GetById(string id);
 
     int Add(T entity);
 
     int Update(T entity);
 
-    int Delete(T entity, bool isHardDelete = false);
+    int Delete(string id, bool isHardDelete = false);
 
-    int Delete(IEnumerable<T> Entities, bool isHardDelete = false);
+    int Delete(IEnumerable<string> ids, bool isHardDelete = false);
+
+    // bool CheckUnique(string tableName, string columnName, string columnValue, string primaryKeyName, string? primaryKeyValue);
 }

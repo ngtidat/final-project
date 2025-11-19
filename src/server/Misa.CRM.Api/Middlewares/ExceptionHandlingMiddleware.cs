@@ -43,10 +43,15 @@ public class ExceptionHandlingMiddleware
             _ => HttpStatusCode.InternalServerError
         };
 
-        var response = new
+        var errorResponse = new
         {
-            StatusCode = (int)statusCode,
-            Message = exception.Message
+            data = (object?)null,
+            meta = (object?)null,
+            error = new
+            {
+                code = (int)statusCode,
+                message = exception.Message
+            }
         };
 
         context.Response.ContentType = "application/json";
@@ -57,7 +62,8 @@ public class ExceptionHandlingMiddleware
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        var json = JsonSerializer.Serialize(response, options);
+        var json = JsonSerializer.Serialize(errorResponse, options);
+
         await context.Response.WriteAsync(json);
     }
 }

@@ -7,7 +7,7 @@ using Misa.CRM.Business.Interfaces.Services;
 
 namespace Misa.CRM.Business.Services;
 
-public class CustomerService : BaseService<Customer, CustomerDto>, ICustomerService
+public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreateUpdateDto>, ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
     public CustomerService(ICustomerRepository repository, IMapper mapper) : base(repository, mapper)

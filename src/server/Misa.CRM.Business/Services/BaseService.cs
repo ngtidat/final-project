@@ -1,13 +1,15 @@
+using System.Reflection;
 using AutoMapper;
-using Microsoft.VisualBasic;
-using Misa.CRM.Business.Common.Models;
-using Misa.CRM.Business.Dtos;
+using Misa.CRM.Business.Common.Exceptions;
+using Misa.CRM.Business.Entities;
+using Misa.CRM.Business.Helpers;
 using Misa.CRM.Business.Interfaces.Repositories;
 using Misa.CRM.Business.Interfaces.Services;
+using Misa.CRM.Business.MisaAttributes;
 
 namespace Misa.CRM.Business.Services;
 
-public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : BaseDto where T : class
+public class BaseService<T, TDto, TCreateUpdateDto> : IBaseService<T, TDto, TCreateUpdateDto> where TDto : class where T : BaseEntity where TCreateUpdateDto : class
 {
     protected readonly IBaseRepository<T> _repository;
 
@@ -19,19 +21,21 @@ public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : BaseDto w
         _mapper = mapper;
     }
 
-    public int Add(TDto dto)
+    public int Add(TCreateUpdateDto dto)
     {
-        throw new NotImplementedException();
+        var entity = _mapper.Map<T>(dto);
+        ValidateEntity(entity);
+        return _repository.Add(entity);
     }
 
-    public int Delete(TDto dto, bool isHardDelete = false)
+    public int Delete(string id, bool isHardDelete = false)
     {
-        throw new NotImplementedException();
+        return _repository.Delete(id, isHardDelete);
     }
 
-    public int Delete(IEnumerable<TDto> dtos, bool isHardDelete = false)
+    public int Delete(IEnumerable<string> ids, bool isHardDelete = false)
     {
-        throw new NotImplementedException();
+        return _repository.Delete(ids, isHardDelete);
     }
 
     public IEnumerable<TDto> GetAll()
@@ -39,29 +43,70 @@ public class BaseService<T, TDto> : IBaseService<T, TDto> where TDto : BaseDto w
         return _mapper.Map<IEnumerable<TDto>>(_repository.GetAll());
     }
 
-    public TDto GetById(Guid id)
+    public TDto GetById(string id)
     {
-        throw new NotImplementedException();
+        return _mapper.Map<TDto>(_repository.GetById(id));
     }
 
-    // public PaginatedResult<TDto> Paginate(int pageIndex, int pageSize, string? strSearch, string? sortColumn, int sortDirection)
-    // {
-    //     var dto = (TDto)Activator.CreateInstance(typeof(TDto))!;
-    //     var searchColumns = string.Join(", ", dto.SearchableColumns!);
-    //     var baseQuery = _repository.GetBaseQuery();
-
-    //     var paginatedResult = _repository.Paginate(baseQuery, searchColumns, pageIndex, pageSize, strSearch, sortColumn, sortDirection);
-    //     var mappedItems = _mapper.Map<List<TDto>>(paginatedResult.Items);
-    //     return new PaginatedResult<TDto>(
-    //         pageIndex,
-    //         pageSize,
-    //         mappedItems.Count,
-    //         [.. mappedItems]
-    //     );
-    // }
-
-    public int Update(TDto dto)
+    public int Update(string id, TCreateUpdateDto dto)
     {
-        throw new NotImplementedException();
+        var entity = _mapper.Map<T>(dto);
+
+        var pkProp = DapperMetadataHelper.GetPrimaryKeyProperty<T>();
+        typeof(T).GetProperty(pkProp)?.SetValue(entity, id);
+
+        ValidateEntity(entity);
+        return _repository.Update(entity);
+    }
+
+    public void ValidateEntity(T entity)
+    {
+        var properties = typeof(T).GetProperties();
+
+        foreach (var prop in properties)
+        {
+            var value = prop.GetValue(entity);
+
+            // MaxLength
+            var maxLengthAttr = prop.GetCustomAttribute<MisaMaxLengthAttribute>();
+            if (maxLengthAttr != null && value is string str &&
+                str.Length > maxLengthAttr.MaxLength)
+            {
+                throw new RequestValidationException(maxLengthAttr.ErrorMessage);
+            }
+
+            // Email
+            var emailAttr = prop.GetCustomAttribute<MisaEmailAttribute>();
+            if (emailAttr != null && value is string email &&
+                !emailAttr.IsValid(email))
+            {
+                throw new RequestValidationException(emailAttr.ErrorMessage);
+            }
+
+            // Phone
+            var phoneAttr = prop.GetCustomAttribute<MisaPhoneAttribute>();
+            if (phoneAttr != null && value is string phone &&
+                !phoneAttr.IsValid(phone))
+            {
+                throw new RequestValidationException(phoneAttr.ErrorMessage);
+            }
+
+            // Unique
+            // var uniqueAttr = prop.GetCustomAttribute<MisaUniqueAttribute>();
+            // if (uniqueAttr != null)
+            // {
+            //     var tableName = DapperMetadataHelper.GetTableName<T>();
+            //     var isExist = _repository.CheckUnique(
+            //         tableName,
+            //         prop.Name.ToSnakeCase(),
+            //         value?.ToString() ?? "",
+            //         uniqueAttr.PrimaryKeyName,
+            //         GetPrimaryKeyValue(entity)
+            //     );
+
+            //     if (isExist)
+            //         throw new ResourceUniqueException(uniqueAttr.ErrorMessage);
+            // }
+        }
     }
 }

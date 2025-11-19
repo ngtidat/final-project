@@ -67,4 +67,43 @@ public static class DapperMetadataHelper
             overrides.Contains(p.Name) || p.GetCustomAttribute<MisaColumnAttribute>() != null
         );
     }
+
+    /// <summary>
+    /// Lấy tên khóa chính của cột
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static string GetPrimaryKey<T>()
+    {
+        var type = typeof(T);
+
+        var pkProperty = type.GetProperties()
+                             .FirstOrDefault(p => p.GetCustomAttribute<MisaPrimaryKeyAttribute>() != null);
+
+        if (pkProperty != null)
+        {
+            var attr = pkProperty.GetCustomAttribute<MisaPrimaryKeyAttribute>();
+            return attr?.PrimaryKeyName ?? pkProperty.Name;
+        }
+
+        return "Id";
+    }
+
+    /// <summary>
+    /// Lấy tên khóa chính của entity
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static string GetPrimaryKeyProperty<T>()
+    {
+        var type = typeof(T);
+
+        var pkProperty = type.GetProperties()
+                             .FirstOrDefault(p => p.GetCustomAttribute<MisaPrimaryKeyAttribute>() != null);
+
+        if (pkProperty != null)
+            return pkProperty.Name;
+
+        return "Id";
+    }
 }
