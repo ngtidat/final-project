@@ -39,10 +39,14 @@
                 </tr>
             </tbody>
         </table>
+
+        <div v-if="rows.length <= 0" class="no-data">
+            Không có bản ghi nào
+        </div>
     </div>
 
     <!-- Pagination -->
-    <div class="pagination d-flex align-items-center justify-content-space-between">
+    <div v-if="rows.length > 0" class="pagination d-flex align-items-center justify-content-space-between">
         <div class="pagination-left d-flex align-items-center justify-content-center">
             <div class="icon-wrapper">
                 <span class="icon icon-setting-pagination"></span>
@@ -289,7 +293,7 @@ input[type="checkbox"] {
     pointer-events: none !important;
 }
 
-.icon-wrapper:hover{
+.icon-wrapper:hover {
     background-color: #e2e4e9;
     border-radius: 50%;
     cursor: pointer;
@@ -307,5 +311,12 @@ input[type="checkbox"] {
 .right-icon-wrapper {
     margin-right: 8px;
     padding: 4px;
+}
+
+.no-data {
+    text-align: center;
+    padding: 32px 0;
+    color: #888;
+    font-size: 14px;
 }
 </style>

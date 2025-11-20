@@ -19,7 +19,7 @@
                     <span class="icon icon-smart-search"></span>
                 </div>
                 <div class="flex1">
-                    <input class="input" type="text" placeholder="Tìm kiếm thông minh">
+                    <input class="input" type="text" placeholder="Tìm kiếm thông minh" @input="handleSearchChange($event.target.value)">
                 </div>
                 <img src="../../assets/images/icon-ai.svg" alt="" class="icon-search-box">
             </div>
@@ -42,6 +42,8 @@
             </div>
         </div>
     </TheTopbar>
+
+    <!-- Table and pagination -->
     <div class="main-content flex1 d-flex flex-direction-column">
         <MsTable :columns="columns" :rows="customers" :total-count="totalRecords" :current-page="pageIndex"
             :page-size="pageSize" @row-click="handleRowClick" @selection-change="handleSelection"
@@ -136,6 +138,11 @@ function handlePageChange(newPage) {
 
 function handlePageSizeChange(newSize) {
     pageSize.value = newSize;
+    pageIndex.value = 1;
+}
+
+function handleSearchChange(newSearch) {
+    strSearch.value = newSearch;
     pageIndex.value = 1;
 }
 
