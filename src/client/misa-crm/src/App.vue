@@ -3,13 +3,13 @@ import TheHeader from './layouts/TheHeader.vue';
 </script>
 
 <template>
-  <div>
+  <div class="d-flex flex-direction-column h-100">
     <!-- Header -->
     <div class="header">
       <TheHeader />
     </div>
     <!-- Container -->
-    <div class="container d-flex flex-direction-column">
+    <div class="container flex1 d-flex flex-direction-column">
       <!-- Router -->
        <router-view />
     </div>
@@ -17,6 +17,10 @@ import TheHeader from './layouts/TheHeader.vue';
 </template>
 
 <style scoped>
+.header {
+  height: 48px;
+}
+
 .container {
   overflow: hidden;
 }

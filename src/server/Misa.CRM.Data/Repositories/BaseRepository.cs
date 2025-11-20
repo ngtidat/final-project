@@ -83,11 +83,20 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public int Add(T entity)
     {
+        var now = DateTime.Now;
+        entity.CreatedAt = now;
+        entity.UpdatedAt = now;
+
         var tableName = DapperMetadataHelper.GetTableName<T>();
         var columnMappings = DapperMetadataHelper.GetColumnMappings<T>();
 
-        var columns = columnMappings.Values.Where(c => c != "created_at" && c != "updated_at").ToList();
-        var parameters = columnMappings.Keys.Where(k => k != "CreatedAt" && k != "UpdatedAt").Select(p => "@" + p).ToList();
+        var columns = columnMappings.Values.ToList();
+        var parameters = columnMappings.Keys.Select(p => "@" + p).ToList();
+
+        // columns.Add("created_at");
+        // columns.Add("updated_at");
+        // parameters.Add("@CreatedAt");
+        // parameters.Add("@UpdatedAt");
 
         var sql = $"INSERT INTO {tableName} ({string.Join(", ", columns)}) VALUES ({string.Join(", ", parameters)})";
 

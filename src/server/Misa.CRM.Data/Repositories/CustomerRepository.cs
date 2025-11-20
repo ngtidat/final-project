@@ -79,7 +79,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
     {
         using var connection = _context.CreateConnection();
 
-        // var customerId = connection.ExecuteScalar<string>("SELECT func_cu_gen_customer_id()");
+        entity.CreatedAt = DateTime.Now;
 
         var parameters = new DynamicParameters();
         // parameters.Add("p_customer_name")
@@ -96,6 +96,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
         parameters.Add("p_purchase_items", entity.PurchaseItems);
         parameters.Add("p_purchase_item_name", entity.PurchaseItemName);
         parameters.Add("p_shipping_address", entity.ShippingAddress);
+        parameters.Add("p_created_at", entity.CreatedAt);
 
         return connection.Execute(
             "proc_add_customer",

@@ -8,8 +8,9 @@
 
 <style scoped>
 .topbar{
+    min-height: 56px;
     font-size: 13px;
-    height: 56px;
+    max-height: 56px;
     padding: 0 16px !important;
     border-bottom: 1px solid #d3d7de;
     background-color: #e2e4e9;

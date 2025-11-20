@@ -62,3 +62,39 @@
 .icon-plus {
     mask-position: -240px -128px;
 }
+
+.icon-import {
+    mask-position: -176px -192px;
+}
+
+.icon-dot-menu {
+    mask-position: -48px 0;
+}
+
+.icon-category {
+    mask-position: -128px -304px;
+}
+
+.icon-phone {
+    mask-position: -320px -48px;
+}
+
+.icon-setting-pagination {
+    mask-position: -272px -176px;
+}
+
+.icon-previous-start {
+    mask-position: -112px -224px;
+}
+
+.icon-next-last {
+    mask-position: -128px -224px;
+}
+
+.icon-previous {
+    mask-position: -288px -32px;
+}
+
+.icon-next {
+    mask-position: -304px -32px;
+}

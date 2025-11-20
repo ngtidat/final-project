@@ -1,4 +1,3 @@
-using Misa.CRM.Business.Entities.Common;
 using Misa.CRM.Business.MisaAttributes;
 
 namespace Misa.CRM.Business.Entities;

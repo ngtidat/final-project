@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Misa.CRM.Api.Common.Responses;
 using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Dtos.Customer;
@@ -42,7 +43,10 @@ public class CustomerController : ControllerBase
     public IActionResult GetById(string id)
     {
         var customer = _customerService.GetById(id);
-        return Ok(customer);
+        var response = new ApiResponse<CustomerDto>(
+            data: customer
+        );
+        return Ok(response);
     }
 
     /// <summary>
@@ -53,7 +57,10 @@ public class CustomerController : ControllerBase
     public IActionResult GetCustomersWithType()
     {
         var customers = _customerService.GetCustomersWithType();
-        return Ok(customers);
+        var response = new ApiResponse<IEnumerable<CustomerDto>>(
+            data:customers
+        );
+        return Ok(response);
     }
 
     /// <summary>
@@ -69,7 +76,10 @@ public class CustomerController : ControllerBase
     public IActionResult Search(int pageIndex = 1, int pageSize = 100, string? strSearch = null, string? sortColumn = "c.created_at", int sortDirection = 1)
     {
         var result = _customerService.Paginate(strSearch, pageIndex, pageSize, sortColumn, sortDirection);
-        return Ok(result);
+        var response = new ApiResponse<PaginatedResult<CustomerDto>>(
+            data: result
+        );
+        return Ok(response);
     }
 
     [HttpPost("create")]
