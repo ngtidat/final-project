@@ -138,6 +138,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
             foreach (var customer in customers)
             {
                 index++;
+                customer.CreatedAt = DateTime.Now;
                 var parameters = new DynamicParameters();
                 parameters.Add("p_customer_name", customer.CustomerName);
                 parameters.Add("p_customer_address", customer.CustomerAddress);
@@ -152,6 +153,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
                 parameters.Add("p_purchase_items", customer.PurchaseItems);
                 parameters.Add("p_purchase_item_name", customer.PurchaseItemName);
                 parameters.Add("p_shipping_address", customer.ShippingAddress);
+                parameters.Add("p_created_at", customer.CreatedAt);
 
                 connection.ExecuteScalar<string>(
                     "proc_add_customer",
