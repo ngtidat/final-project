@@ -6,6 +6,7 @@ const routes = [
     { path: '/', redirect: '/customer' },
     { path: '/customer', name: 'customer', component: Customer },
     { path: '/customer/add', name: 'add-customer', component: CustomerForm },
+    { path: '/customer/update/:id', name: 'update-customer', component: CustomerForm },
     { path: '/:pathMatch(.*)*', redirect: '/customer' }
 ];
 

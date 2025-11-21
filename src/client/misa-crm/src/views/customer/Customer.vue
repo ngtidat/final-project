@@ -54,7 +54,7 @@
     <!-- Table and pagination -->
     <div class="main-content flex1 d-flex flex-direction-column">
         <MsTable ref="msTableRef" :columns="columns" :rows="customers" :total-count="totalRecords"
-            :current-page="pageIndex" :page-size="pageSize" @row-click="handleRowClick"
+            :current-page="pageIndex" :page-size="pageSize" @edit-row="handleEditRow"
             @selection-change="handleSelection" @page-change="handlePageChange"
             @page-size-change="handlePageSizeChange">
             <template #customerName="{ row, value }">
@@ -85,10 +85,13 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
+import { useRouter } from 'vue-router'
 import MsButton from '../../components/MsButton.vue';
 import TheTopbar from '../../layouts/TheTopbar.vue';
 import MsTable from '../../components/MsTable.vue';
 import { customerService } from '../../services/customerService.js';
+
+const router = useRouter()
 
 // Data
 const customers = ref([]);
@@ -167,12 +170,15 @@ const columns = [
     { key: 'purchaseItemName', label: 'Tên hàng hóa đã mua', type: 'text' }
 ];
 
-const handleRowClick = (row) => {
+const handleEditRow = (row) => {
+    router.push({
+        name: 'update-customer',
+        params: { id: row.customerId }
+    });
 };
 
 const handleSelection = (rows) => {
     selectedItems.value = rows
-    // console.log('Selected rows:', selectedItems.value);
 };
 
 const msTableRef = ref(null)

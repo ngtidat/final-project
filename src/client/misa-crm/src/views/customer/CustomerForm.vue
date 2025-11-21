@@ -36,32 +36,32 @@
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Mã khách hàng</label>
-                        <input type="text" disabled :value="newCustomerId">
+                        <input type="text" disabled :value="currentCustomerId ?? newCustomerId">
                     </div>
                     <div class="d-flex field">
                         <label for="">
                             Tên khách hàng
                             <span class="required">*</span>
                         </label>
-                        <input type="text" v-model="formData.CustomerName">
+                        <input type="text" v-model="formData.customerName">
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Số điện thoại</label>
-                        <input type="text" v-model="formData.CustomerPhone"
-                            @blur="() => validatePhone(formData.CustomerPhone)">
+                        <input type="text" v-model="formData.customerPhone"
+                            @blur="() => validatePhone(formData.customerPhone)">
                     </div>
                     <div class="d-flex field">
                         <label for="">Email</label>
-                        <input type="text" v-model="formData.CustomerEmail"
-                            @blur="() => validateEmail(formData.CustomerEmail)">
+                        <input type="text" v-model="formData.customerEmail"
+                            @blur="() => validateEmail(formData.customerEmail)">
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Giới tính</label>
-                        <select v-model="formData.Gender">
+                        <select v-model="formData.gender">
                             <option :value="null"></option>
                             <option :value="1">Nam</option>
                             <option :value="0">Nữ</option>
@@ -69,27 +69,27 @@
                     </div>
                     <div class="d-flex field">
                         <label for="">Địa chỉ</label>
-                        <input type="text" v-model="formData.CustomerAddress">
+                        <input type="text" v-model="formData.customerAddress">
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Lĩnh vực</label>
-                        <input type="text" placeholder="null" v-model="formData.CustomerIndustry">
+                        <input type="text" placeholder="null" v-model="formData.customerIndustry">
                     </div>
                     <div class="d-flex field">
                         <label for="">Mã số thuế</label>
-                        <input type="text" v-model="formData.CustomerTaxCode">
+                        <input type="text" v-model="formData.customerTaxCode">
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Số điện thoại khác</label>
-                        <input type="text" v-model="formData.OtherPhoneNumber">
+                        <input type="text" v-model="formData.otherPhoneNumber">
                     </div>
                     <div class="d-flex field">
                         <label for="">Loại khách hàng</label>
-                        <select v-model="formData.CustomerTypeId">
+                        <select v-model="formData.customerTypeId">
                             <option :value="null">null</option>
                             <option v-for="type in customerTypes" :key="type.customerTypeId"
                                 :value="type.customerTypeId">
@@ -101,21 +101,21 @@
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Ngày mua gần nhất</label>
-                        <input type="text" v-model="formData.LastPurchaseDate">
+                        <input type="date" v-model="formData.lastPurchaseDate">
                     </div>
                     <div class="d-flex field">
                         <label for="">Hàng hóa đã mua</label>
-                        <input type="text" v-model="formData.PurchaseItems">
+                        <input type="text" v-model="formData.purchaseItems">
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Tên hàng hóa mua</label>
-                        <input type="text" v-model="formData.PurchasedItemName">
+                        <input type="text" v-model="formData.purchaseItemName">
                     </div>
                     <div class="d-flex field">
                         <label for="">Địa chỉ giao hàng</label>
-                        <input type="text" v-model="formData.ShippingAddress">
+                        <input type="text" v-model="formData.shippingAddress">
                     </div>
                 </div>
             </div>
@@ -129,13 +129,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
 import TheTopbar from '../../layouts/TheTopbar.vue'
+import { formatDate } from '../../utils/formatter.js'
 
 const route = useRoute();
 const router = useRouter();
 const isAdd = ref(true);
 
 const customerTypes = ref([]);
-const customerId = ref(null);
 const newCustomerId = ref(null);
 const error = ref(null);
 
@@ -144,19 +144,19 @@ const originalPhone = ref(null);
 
 // Form data reactive
 const formData = reactive({
-    CustomerName: '',
-    CustomerPhone: '',
-    CustomerEmail: '',
-    Gender: null,
-    CustomerAddress: '',
-    CustomerTypeId: null,
-    CustomerIndustry: '',
-    CustomerTaxCode: '',
-    OtherPhoneNumber: '',
-    LastPurchaseDate: '',
-    PurchaseItems: '',
-    PurchaseItemName: '',
-    ShippingAddress: ''
+    customerName: '',
+    customerPhone: '',
+    customerEmail: '',
+    gender: null,
+    customerAddress: '',
+    customerTypeId: null,
+    customerIndustry: '',
+    customerTaxCode: '',
+    otherPhoneNumber: '',
+    lastPurchaseDate: '',
+    purchaseItems: '',
+    purchaseItemName: '',
+    shippingAddress: ''
 });
 
 const currentCustomerId = route.params.id || null; // lấy từ route nếu có
@@ -183,44 +183,69 @@ const fetchNewCustomerId = async () => {
 
 // Lấy dữ liệu customer nếu đang update
 const fetchCustomer = async () => {
-    if (!currentCustomerId) return;
     try {
         const res = await customerService.getById(currentCustomerId);
         const data = res.data.data;
 
-        Object.keys(formData).forEach(key => {
-            if (data[key] !== undefined) formData[key] = data[key];
-        });
+        formData.customerName = data.customerName || "";
+        formData.customerPhone = data.customerPhone || "";
+        formData.customerEmail = data.customerEmail || "";
+        formData.gender = data.gender !== undefined ? data.gender : null;
+        formData.customerAddress = data.customerAddress || "";
+        formData.customerIndustry = data.customerIndustry || "";
+        formData.customerTaxCode = data.customerTaxCode || "";
+        formData.otherPhoneNumber = data.otherPhoneNumber || "";
+        formData.lastPurchaseDate = formatDateForInput(data.lastPurchaseDate);
+        formData.purchaseItems = data.purchaseItems || "";
+        formData.purchaseItemName = data.purchaseItemName || "";
+        formData.shippingAddress = data.shippingAddress || "";
 
-        originalEmail.value = data.CustomerEmail || '';
-        originalPhone.value = data.CustomerPhone || '';
-        customerId.value = data.CustomerTypeId || null;
+        formData.customerTypeId = data.customerType?.customerTypeId || null;
+
+        originalEmail.value = data.customerEmail;
+        originalPhone.value = data.customerPhone;
     } catch (err) {
-        error.value = err;
+        console.log(err);
     }
+};
+
+function formatDateForInput(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Month từ 0-11
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
+
 
 onMounted(() => {
     fetchCustomerTypes();
-    fetchCustomer();
-    fetchNewCustomerId();
+
+    if (currentCustomerId) {
+        isAdd.value = false;
+        fetchCustomer();
+    } else {
+        isAdd.value = true;
+        fetchNewCustomerId();
+    }
 });
 
 function buildPayload() {
     return {
-        CustomerName: formData.CustomerName || '',
-        CustomerAddress: formData.CustomerAddress || null,
-        CustomerPhone: formData.CustomerPhone || null,
-        CustomerEmail: formData.CustomerEmail || null,
-        CustomerTaxCode: formData.CustomerTaxCode || null,
-        CustomerTypeId: formData.CustomerTypeId || null,
-        CustomerIndustry: formData.CustomerIndustry || null,
-        Gender: formData.Gender !== null ? Number(formData.Gender) : null,
-        OtherPhoneNumber: formData.OtherPhoneNumber || null,
-        LastPurchaseDate: formData.LastPurchaseDate || null,
-        PurchaseItems: formData.PurchaseItems || null,
-        PurchaseItemName: formData.PurchaseItemName || null,
-        ShippingAddress: formData.ShippingAddress || null
+        CustomerName: formData.customerName || '',
+        CustomerAddress: formData.customerAddress || null,
+        CustomerPhone: formData.customerPhone || null,
+        CustomerEmail: formData.customerEmail || null,
+        CustomerTaxCode: formData.customerTaxCode || null,
+        CustomerTypeId: formData.customerTypeId || null,
+        CustomerIndustry: formData.customerIndustry || null,
+        Gender: formData.gender !== null ? Number(formData.gender) : null,
+        OtherPhoneNumber: formData.otherPhoneNumber || null,
+        LastPurchaseDate: formData.lastPurchaseDate != null ? new Date(formData.lastPurchaseDate) : null,
+        PurchaseItems: formData.purchaseItems || null,
+        PurchaseItemName: formData.purchaseItemName || null,
+        ShippingAddress: formData.shippingAddress || null
     }
 }
 
@@ -246,7 +271,7 @@ async function validateEmail(email) {
         // console.log(res.data.data)
         if (res.data.data) {
             alert("Email đã tồn tại");
-            formData.CustomerEmail = '';
+            formData.customerEmail = '';
         }
     } catch (err) {
         console.error(err.response?.data);
@@ -262,7 +287,7 @@ async function validatePhone(phone) {
         const res = await customerService.checkExistPhone(phone);
         if (res.data.data) {
             alert("Số điện thoại đã tồn tại");
-            formData.CustomerPhone = '';
+            formData.customerPhone = '';
         }
     } catch (err) {
         console.error(err.response?.data);
@@ -270,10 +295,10 @@ async function validatePhone(phone) {
 }
 
 async function handleSave() {
-    if (!validateName(formData.CustomerName)) return;
+    if (!validateName(formData.customerName)) return;
 
-    await validateEmail(formData.CustomerEmail);
-    await validatePhone(formData.CustomerPhone);
+    await validateEmail(formData.customerEmail);
+    await validatePhone(formData.customerPhone);
 
     const payload = buildPayload();
 
@@ -281,14 +306,14 @@ async function handleSave() {
         if (currentCustomerId) {
             // console.log('Data to send:', payload)
             await customerService.update(currentCustomerId, payload)
-            // alert("Cập nhật thành công")
+            alert("Cập nhật thành công")
         } else {
             // console.log('Data to send:', payload)
             await customerService.create(payload)
-            // alert("Thêm mới thành công")
+            alert("Thêm mới thành công")
         }
 
-        // router.push('/customer')
+        router.push('/customer')
     } catch (error) {
         console.log(error)
         alert("Lỗi khi lưu khách hàng")
@@ -296,12 +321,12 @@ async function handleSave() {
 }
 
 async function handleSaveAdd() {
-    if (!validateName(formData.CustomerName)) return;
+    if (!validateName(formData.customerName)) return;
 
-    await validateEmail(formData.CustomerEmail);
-    await validatePhone(formData.CustomerPhone);
+    await validateEmail(formData.customerEmail);
+    await validatePhone(formData.customerPhone);
 
-    if (!formData.CustomerEmail || !formData.CustomerPhone) {
+    if (!formData.customerEmail || !formData.customerPhone) {
         return;
     }
 

@@ -17,7 +17,8 @@
             </thead>
 
             <tbody>
-                <tr v-for="(row, rowIndex) in rows" :key="rowIndex" @click="$emit('row-click', row)">
+                <tr v-for="(row, rowIndex) in rows" :key="rowIndex"
+                    class="row-with-button">
                     <!-- Checkbox từng dòng -->
                     <td class="checkbox">
                         <input type="checkbox" :value="row" v-model="selectedRows" @click.stop />
@@ -36,6 +37,9 @@
                             {{ handleFormat(row[col.key], col.type || 'text') }}
                         </template>
                     </td>
+
+                    <!-- Nút Edit -->
+                    <button class="edit-btn" @click="$emit('edit-row', row)">Edit</button>
                 </tr>
             </tbody>
         </table>
@@ -134,7 +138,7 @@ const handleFormat = (value, type) => {
     }
 };
 
-const emit = defineEmits(['row-click', 'selection-change', 'page-change', 'page-size-change'])
+const emit = defineEmits(['edit-row', 'selection-change', 'page-change', 'page-size-change'])
 
 const selectAll = ref(false)
 const selectedRows = ref([])
@@ -332,5 +336,29 @@ input[type="checkbox"] {
     padding: 32px 0;
     color: #888;
     font-size: 14px;
+}
+
+.row-with-button {
+    position: relative;
+}
+
+.edit-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    padding: 4px 8px;
+    font-size: 13px;
+    background-color: #2a7efc;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.row-with-button:hover .edit-btn {
+    display: inline-block;
 }
 </style>

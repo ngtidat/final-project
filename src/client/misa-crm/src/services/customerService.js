@@ -26,7 +26,7 @@ export const customerService = {
   create: (data) => api.post('/Customer/create', data),
 
   // Cập nhật khách hàng theo id
-  update: (id, data) => api.put(`/Customer/${id}`, data),
+  update: (id, data) => api.put(`/Customer/update`, data, { params: { id } }),
 
   // Xoá khách hàng theo id
   delete: (id) => api.delete(`/Customer/${id}`),
