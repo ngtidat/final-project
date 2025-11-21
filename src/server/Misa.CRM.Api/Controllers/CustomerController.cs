@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Misa.CRM.Api.Common.Responses;
 using Misa.CRM.Business.Common.Models;
 using Misa.CRM.Business.Dtos.Customer;
@@ -59,6 +58,20 @@ public class CustomerController : ControllerBase
         var customers = _customerService.GetCustomersWithType();
         var response = new ApiResponse<IEnumerable<CustomerDto>>(
             data:customers
+        );
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("get-new-id")]
+    public IActionResult GetNewCustomerId()
+    {
+        var newCustomerId = _customerService.GetNewCustomerId();
+        var response = new ApiResponse<string>(
+            data:newCustomerId
         );
         return Ok(response);
     }
@@ -131,6 +144,28 @@ public class CustomerController : ControllerBase
 
         var result = _customerService.Import(file);
         var response = new ApiResponse<ImportResult>(data: result);
+        return Ok(response);
+    }
+
+    [HttpGet("check-exist-email")]
+    public IActionResult IsUniqueEmail(string email)
+    {
+        var result = _customerService.CheckEmailUnique(email);
+        var response = new ApiResponse<int>
+        (
+            data: result
+        );
+        return Ok(response);
+    }
+
+    [HttpGet("check-exist-phone")]
+    public IActionResult IsUniquePhone(string phone)
+    {
+        var result = _customerService.CheckPhoneUnique(phone);
+        var response = new ApiResponse<int>
+        (
+            data: result
+        );
         return Ok(response);
     }
 }

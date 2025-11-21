@@ -194,8 +194,22 @@ function toggleSelectAll() {
         selectedRows.value = []
     }
 }
-</script>
 
+watch(() => props.rows, () => {
+    selectedRows.value = []
+    selectAll.value = false
+    emit('selection-change', selectedRows.value)
+})
+
+function clearSelection() {
+    selectedRows.value = []
+    selectAll.value = false
+    emit('selection-change', selectedRows.value)
+}
+
+// Expose method cho cha
+defineExpose({ clearSelection })
+</script>
 
 <style scoped>
 .table-container {

@@ -34,6 +34,24 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
         )];
     }
 
+    public new Customer GetById(string id)
+    {
+        using var connection = _context.CreateConnection();
+        var result = connection.Query<Customer, CustomerType, Customer>(
+        sql: "proc_get_customer_by_id",
+        map: (customer, customerType) =>
+            {
+                customer.CustomerType = customerType;
+                return customer;
+            },
+            param: new { p_customer_id = id },  
+            commandType: CommandType.StoredProcedure,
+            splitOn: "CustomerTypeId"
+        ).FirstOrDefault();
+
+        return result;
+    }
+
     public PaginatedResult<Customer> SearchAndPaginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection)
     {
         using var connection = _context.CreateConnection();
@@ -135,7 +153,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
                 parameters.Add("p_purchase_item_name", customer.PurchaseItemName);
                 parameters.Add("p_shipping_address", customer.ShippingAddress);
 
-                var newId = connection.ExecuteScalar<string>(
+                connection.ExecuteScalar<string>(
                     "proc_add_customer",
                     parameters,
                     commandType: CommandType.StoredProcedure,
@@ -153,6 +171,40 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
             throw;
         }
 
+
+        return result;
+    }
+
+    public string GetNewCustomerId()
+    {
+        using var connection = _context.CreateConnection();
+
+        // Nếu func_cu_gen_customer_id là function trong SQL Server
+        var sql = "SELECT func_cu_gen_customer_id()";
+
+        // Dapper QuerySingleOrDefault sẽ trả về 1 giá trị duy nhất
+        var newCustomerId = connection.QuerySingleOrDefault<string>(sql);
+
+        return newCustomerId!;
+    }
+
+    public int CheckEmailUnique(string email)
+    {
+        using var connection = _context.CreateConnection();
+
+        var sql = "SELECT func_check_email_unique(@Email);";
+
+        var result = connection.ExecuteScalar<int>(sql, new { Email = email });
+
+        return result;
+    }
+
+    public int CheckPhoneUnique(string phone)
+    {
+        var sql = "SELECT func_check_phone_unique(@Phone);";
+
+        using var connection = _context.CreateConnection();
+        var result = connection.ExecuteScalar<int>(sql, new { Phone = phone });
 
         return result;
     }

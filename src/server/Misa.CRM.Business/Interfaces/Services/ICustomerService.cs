@@ -12,4 +12,10 @@ public interface ICustomerService : IBaseService<Customer, CustomerDto, Customer
     public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection);
 
     public ImportResult Import(IFormFile file);
+
+    public string GetNewCustomerId();
+
+    public int CheckEmailUnique(string email);
+
+    public int CheckPhoneUnique(string phone);
 }

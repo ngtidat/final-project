@@ -98,3 +98,14 @@
 .icon-next {
     mask-position: -304px -32px;
 }
+
+.icon-avatar {
+    display: block;
+    background: url(../images/ICON.svg) no-repeat 0 -848px ;
+    width: 48px !important;
+    height: 48px !important;
+}
+
+.icon-customer-type {
+    mask-position: -288px -708px;
+}

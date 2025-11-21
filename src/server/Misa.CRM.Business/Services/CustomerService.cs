@@ -21,6 +21,11 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
         return _mapper.Map<IEnumerable<CustomerDto>>(_customerRepository.GetCustomersWithTypeAsync());
     }
 
+    public string GetNewCustomerId()
+    {
+        return _customerRepository.GetNewCustomerId();
+    }
+
     public ImportResult Import(IFormFile file)
     {
         using var reader = new StreamReader(file.OpenReadStream());
@@ -118,5 +123,15 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
             result.TotalRecords,
             [.. _mapper.Map<IEnumerable<CustomerDto>>(result.Items)]
         );
+    }
+
+    public int CheckEmailUnique(string email)
+    {
+        return _customerRepository.CheckEmailUnique(email);
+    }
+
+    public int CheckPhoneUnique(string phone)
+    {
+        return _customerRepository.CheckPhoneUnique(phone);
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="add-item d-flex align-items-center">
+    <div class="add-item d-flex align-items-center" @click="goToAddCustomer">
         <div class="icon-wrapper">
             <i class="icon icon-plus"></i>
         </div>
@@ -8,7 +8,13 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+
+const goToAddCustomer = () => {
+    router.push('/customer/add')
+}
 </script>
 
 <style scoped>

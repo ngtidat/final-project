@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Misa.CRM.Api.Common.Responses;
+using Misa.CRM.Business.Dtos.CustomerType;
 using Misa.CRM.Business.Interfaces.Services;
 
 namespace Misa.CRM.Api.Controllers;
@@ -18,6 +20,9 @@ public class CustomerTypeController : ControllerBase
     public IActionResult GetAll()
     {
         var result = _service.GetAll();
-        return Ok(result);
+        var response = new ApiResponse<IEnumerable<CustomerTypeDto>>(
+            data: result
+        );
+        return Ok(response);
     }
 }

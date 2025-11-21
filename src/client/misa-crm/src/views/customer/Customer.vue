@@ -7,36 +7,44 @@
                 <span class="icon icon-angle-down"></span>
             </div>
             <div class="update">Sửa</div>
-            <div class="reload d-flex align-items-center justify-content-center">
+            <div class="reload d-flex align-items-center justify-content-center" @click="handleReload">
                 <span class="icon icon-reload"></span>
             </div>
-            <div></div>
+            <div v-if="selectedItems.length > 0" class="select-item">
+                Đã chọn {{ selectedItems.length }}
+            </div>
+
+            <div v-if="selectedItems.length > 0" class="select-item">
+                <a class="delete-item" @click="handleDeleteSelected">Xóa hàng đã chọn</a>
+            </div>
         </div>
 
         <div class="topbar-right d-flex align-items-center justify-content-end">
             <div class="search-box d-flex align-items-center">
-                <div class="icon-search-box">
+                <div class="icon-search-box cursor-pointer">
                     <span class="icon icon-smart-search"></span>
                 </div>
-                <div class="flex1">
-                    <input class="input" type="text" placeholder="Tìm kiếm thông minh" @input="handleSearchChange($event.target.value)">
+                <div class="flex1 cursor-pointer">
+                    <input class="input" type="text" placeholder="Tìm kiếm thông minh"
+                        @input="handleSearchChange($event.target.value)">
                 </div>
                 <img src="../../assets/images/icon-ai.svg" alt="" class="icon-search-box">
             </div>
-            <div class="tooltip wrap-icon d-flex justify-content-center align-items-center">
+            <div class="tooltip wrap-icon d-flex justify-content-center align-items-center cursor-pointer">
                 <span class="icon icon-statistic"></span>
             </div>
             <MsButton />
-            <div class="tooltip import d-flex justify-content-center align-items-center">
+            <div class="tooltip import d-flex justify-content-center align-items-center cursor-pointer" @click="openFileDialog">
                 <div class="d-flex justify-content-center align-items-center">
                     <span class="icon icon-import"></span>
                 </div>
                 <div>Nhập từ Excel</div>
+                <input type="file" ref="fileInput" style="display:none" accept=".csv" @change="handleFileChange">
             </div>
-            <div class="tooltip wrap-icon d-flex justify-content-center align-items-center">
+            <div class="tooltip wrap-icon d-flex justify-content-center align-items-center cursor-pointer">
                 <span class="icon icon-dot-menu"></span>
             </div>
-            <div class="tooltip dropdown-menu d-flex justify-content-center align-items-center">
+            <div class="tooltip dropdown-menu d-flex justify-content-center align-items-center cursor-pointer">
                 <span class="icon icon-category"></span>
                 <span class="icon icon-angle-down"></span>
             </div>
@@ -45,9 +53,10 @@
 
     <!-- Table and pagination -->
     <div class="main-content flex1 d-flex flex-direction-column">
-        <MsTable :columns="columns" :rows="customers" :total-count="totalRecords" :current-page="pageIndex"
-            :page-size="pageSize" @row-click="handleRowClick" @selection-change="handleSelection"
-            @page-change="handlePageChange" @page-size-change="handlePageSizeChange">
+        <MsTable ref="msTableRef" :columns="columns" :rows="customers" :total-count="totalRecords"
+            :current-page="pageIndex" :page-size="pageSize" @row-click="handleRowClick"
+            @selection-change="handleSelection" @page-change="handlePageChange"
+            @page-size-change="handlePageSizeChange">
             <template #customerName="{ row, value }">
                 <div class="d-flex align-items-center gap-2">
                     <span style="color: #4262f0;">{{ value }}</span>
@@ -90,9 +99,10 @@ const pageIndex = ref(1);
 const pageSize = ref(100);
 const strSearch = ref('');
 const sortColumn = ref(null);
-const sortDirection = ref(1);
+const sortDirection = ref(0);
 
 const totalRecords = ref(0);
+const selectedItems = ref([])
 
 // Gom mọi tham số vào 1 computed
 const queryParams = computed(() => ({
@@ -116,8 +126,6 @@ const fetchCustomers = async () => {
 
         customers.value = res.data.data.items;
         totalRecords.value = res.data.data.totalRecords;
-        
-        console.log(pageIndex.value);
     } catch (err) {
         error.value = err;
     } finally {
@@ -160,12 +168,79 @@ const columns = [
 ];
 
 const handleRowClick = (row) => {
-    console.log('Clicked row:', row);
 };
 
 const handleSelection = (rows) => {
-    console.log('Selected rows:', rows);
+    selectedItems.value = rows
+    // console.log('Selected rows:', selectedItems.value);
 };
+
+const msTableRef = ref(null)
+function handleReload() {
+    pageIndex.value = 1;
+
+    selectedItems.value = [];
+
+    msTableRef.value.clearSelection()
+
+    fetchCustomers();
+}
+
+async function handleDeleteSelected() {
+    if (!selectedItems.value.length) return;
+
+    const confirmDelete = confirm(`Bạn có chắc muốn xóa ${selectedItems.value.length} khách hàng?`);
+    if (!confirmDelete) return;
+
+    try {
+        // Lấy mảng id từ các hàng đã chọn
+        const ids = selectedItems.value.map(item => item.customerId);
+
+        console.log(ids);
+
+        // Gọi API xóa nhiều
+        await customerService.deleteMulti(ids);
+
+        alert('Xóa thành công');
+
+        // Load lại dữ liệu và reset selection
+        selectedItems.value = [];
+        msTableRef.value.clearSelection();
+        fetchCustomers();
+    } catch (error) {
+        console.error(error);
+        alert('Xóa thất bại');
+    }
+}
+
+// Import 
+const fileInput = ref(null);
+
+function openFileDialog() {
+    fileInput.value.click();
+}
+
+async function handleFileChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file); // backend phải nhận param name = 'file'
+
+    try {
+        await customerService.import(formData);
+        alert('Import thành công');
+
+        // Load lại dữ liệu
+        fetchCustomers();
+    } catch (err) {
+        console.error(err);
+        alert('Import thất bại');
+    }
+
+    // reset input để có thể chọn lại file cùng tên
+    event.target.value = '';
+}
 </script>
 
 <style scoped>
@@ -198,7 +273,8 @@ const handleSelection = (rows) => {
 }
 
 .update,
-.reload {
+.reload,
+.select-item {
     margin-left: 16px;
 }
 
@@ -283,5 +359,11 @@ const handleSelection = (rows) => {
     width: 16px;
     height: 16px;
     margin-right: 4px;
+}
+
+.delete-item {
+    color: red;
+    cursor: pointer;
+    text-decoration: underline;
 }
 </style>
