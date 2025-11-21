@@ -34,12 +34,22 @@
                 <span class="icon icon-statistic"></span>
             </div>
             <MsButton />
-            <div class="tooltip import d-flex justify-content-center align-items-center cursor-pointer" @click="openFileDialog">
+            <div class="tooltip import d-flex justify-content-center align-items-center cursor-pointer"
+                @click="openFileDialog">
                 <div class="d-flex justify-content-center align-items-center">
                     <span class="icon icon-import"></span>
                 </div>
                 <div>Nhập từ Excel</div>
                 <input type="file" ref="fileInput" style="display:none" accept=".csv" @change="handleFileChange">
+            </div>
+            <div v-if="selectedItems.length > 0"
+                class="tooltip import d-flex justify-content-center align-items-center cursor-pointer"
+                @click="handleExportSelected">
+                <div class="d-flex justify-content-center align-items-center">
+                    <span class="icon icon-export"></span>
+                </div>
+                <div>Xuất ra Excel</div>
+                <input type="file" ref="fileInput" style="display:none" accept=".csv">
             </div>
             <div class="tooltip wrap-icon d-flex justify-content-center align-items-center cursor-pointer">
                 <span class="icon icon-dot-menu"></span>
@@ -231,7 +241,7 @@ async function handleFileChange(event) {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('file', file); // backend phải nhận param name = 'file'
+    formData.append('file', file);
 
     try {
         await customerService.import(formData);
@@ -246,6 +256,60 @@ async function handleFileChange(event) {
 
     // reset input để có thể chọn lại file cùng tên
     event.target.value = '';
+}
+
+// Export
+function handleExportSelected() {
+    const escapeCsv = (value) => {
+        if (value == null) return '';
+        const str = value.toString();
+        return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+
+    // Header CSV
+    const headers = [
+        'Loại khách hàng',
+        'Mã khách hàng',
+        'Tên khách hàng',
+        'Email',
+        'Số điện thoại',
+        'Địa chỉ',
+        'Mã số thuế',
+        'Lĩnh vực',
+        'Giới tính',
+        'Số điện thoại khác',
+        'Ngày mua hàng gần nhất',
+        'Hàng hóa đã mua',
+        'Tên hàng hóa đã mua',
+        'Địa chỉ giao hàng'
+    ];
+
+    // Rows CSV
+    const csvRows = selectedItems.value.map(c => [
+        escapeCsv(c.customerType?.customerTypeName || ''),
+        escapeCsv(c.customerId),
+        escapeCsv(c.customerName),
+        escapeCsv(c.customerEmail),
+        escapeCsv(c.customerPhone),
+        escapeCsv(c.customerAddress),
+        escapeCsv(c.customerTaxCode),
+        escapeCsv(c.customerIndustry),
+        escapeCsv(c.gender ?? ''),
+        escapeCsv(c.otherPhoneNumber),
+        escapeCsv(c.lastPurchaseDate ? new Date(c.lastPurchaseDate).toLocaleDateString() : ''),
+        escapeCsv(c.purchaseItems),
+        escapeCsv(c.purchaseItemName),
+        escapeCsv(c.shippingAddress)
+    ].join(','));
+
+    const csvContent = "\uFEFF" + [headers.join(','), ...csvRows].join('\n');
+
+    // Tạo blob và download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `SelectedCustomers_${Date.now()}.csv`);
+    link.click();
 }
 </script>
 
@@ -344,7 +408,8 @@ async function handleFileChange(event) {
     padding-right: 8px;
 }
 
-.icon-import {
+.icon-import,
+.icon-export {
     background-color: #4262f0;
     margin: 0 8px;
 }

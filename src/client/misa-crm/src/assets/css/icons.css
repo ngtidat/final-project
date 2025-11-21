@@ -67,6 +67,10 @@
     mask-position: -176px -192px;
 }
 
+.icon-export {
+    mask-position: -160px -192px;
+}
+
 .icon-dot-menu {
     mask-position: -48px 0;
 }
