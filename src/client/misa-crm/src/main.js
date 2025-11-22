@@ -4,7 +4,12 @@ import '@/assets/css/common.css'
 import '@/assets/css/icons.css'
 import router from './router'
 import App from './App.vue'
+import { useToast } from './utils/toast'
 
-createApp(App)
-    .use(router)
-    .mount('#app')
+const app = createApp(App)
+
+const toast = useToast();
+app.provide('toast', toast);
+
+app.use(router);
+app.mount('#app');

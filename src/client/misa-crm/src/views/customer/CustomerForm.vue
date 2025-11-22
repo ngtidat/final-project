@@ -121,21 +121,19 @@
                 </div>
             </div>
         </form>
-        <MsBaseToast v-model="show" :message="message" :type="type" />
     </div>
 
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
 import TheTopbar from '../../layouts/TheTopbar.vue'
-import MsBaseToast from '../../components/MsBaseToast.vue'
-import { useToast } from "../../utils/toast.js";
 
-const { show, message, type, open } = useToast();
+const toast = inject('toast');
+if (!toast) throw new Error('Toast not provided!');
 
 const route = useRoute();
 const router = useRouter();
@@ -310,21 +308,18 @@ async function handleSave() {
 
     try {
         if (currentCustomerId) {
-            // console.log('Data to send:', payload)
             await customerService.update(currentCustomerId, payload)
-            open("Lưu thành công!", "success")
+            toast.open("Lưu thành công!", "success", 2000)
         } else {
-            // console.log('Data to send:', payload)
             await customerService.create(payload)
-            open("Lưu thành công!", "success")
+            toast.open("Lưu thành công!", "success", 2000)
         }
 
-        setTimeout(() => {
-            router.push('/customer')
-        }, 1500)
+        router.push('/customer');
     } catch (error) {
         console.log(error)
-        open("Đã xảy ra lỗi", "error")
+        toast.open("Đã xảy ra lỗi!", "error", 2000)
+
     }
 }
 
@@ -340,15 +335,14 @@ async function handleSaveAdd() {
     try {
         await customerService.create(payload)
 
-        open("Lưu thành công!", "success")
+        toast.open("Lưu thành công!", "success", 2000)
         // Reset form
         Object.keys(formData).forEach(key => formData[key] = null);
 
-        // Lấy mã mới cho form tiếp theo
         fetchNewCustomerId();
     } catch (error) {
         console.error(error)
-        open("Đã xảy ra lỗi", "error")
+        toast.open("Đã xảy ra lỗi", "error", 2000)
     }
 }
 </script>

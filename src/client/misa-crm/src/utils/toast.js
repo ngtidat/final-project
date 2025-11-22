@@ -1,20 +1,21 @@
-import { ref } from "vue";
+import { reactive } from 'vue';
 
 export const useToast = () => {
-   const show = ref(false);
-   const message = ref("");
-   const type = ref("success");
+   const state = reactive({
+      show: false,
+      message: '',
+      type: 'success'
+   });
 
-   function open(msg, t = "success", duration = 2000) {
-      message.value = msg;
-      type.value = t;
-
-      show.value = true;
+   function open(msg, t = 'success', duration = 2000) {
+      state.message = msg;
+      state.type = t;
+      state.show = true;
 
       setTimeout(() => {
-         show.value = false;
+         state.show = false;
       }, duration);
    }
 
-   return { show, message, type, open };
+   return { state, open };
 };

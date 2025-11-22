@@ -1,5 +1,6 @@
 <script setup>
 import TheHeader from './layouts/TheHeader.vue';
+import MsBaseToast from './components/MsBaseToast.vue';
 </script>
 
 <template>
@@ -11,8 +12,10 @@ import TheHeader from './layouts/TheHeader.vue';
     <!-- Container -->
     <div class="container flex1 d-flex flex-direction-column">
       <!-- Router -->
-       <router-view />
+      <router-view />
     </div>
+    <!-- Global Toast -->
+    <MsBaseToast />
   </div>
 </template>
 

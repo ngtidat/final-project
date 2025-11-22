@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, inject } from 'vue';
 import { useRouter } from 'vue-router'
 import MsButton from '../../components/MsButton.vue';
 import TheTopbar from '../../layouts/TheTopbar.vue';
@@ -102,6 +102,9 @@ import MsTable from '../../components/MsTable.vue';
 import { customerService } from '../../services/customerService.js';
 
 const router = useRouter()
+
+const toast = inject('toast');
+if (!toast) throw new Error('Toast not provided!');
 
 // Data
 const customers = ref([]);
@@ -217,7 +220,7 @@ async function handleDeleteSelected() {
         // Gọi API xóa nhiều
         await customerService.deleteMulti(ids);
 
-        alert('Xóa thành công');
+        toast.open("Xóa thành công!", "success", 2000)
 
         // Load lại dữ liệu và reset selection
         selectedItems.value = [];
@@ -225,7 +228,7 @@ async function handleDeleteSelected() {
         fetchCustomers();
     } catch (error) {
         console.error(error);
-        alert('Xóa thất bại');
+        toast.open("Đã có lỗi xảy ra!. Xóa thất bại!", "error", 2000)
     }
 }
 
