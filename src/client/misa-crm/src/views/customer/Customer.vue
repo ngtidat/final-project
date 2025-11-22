@@ -20,7 +20,7 @@
         </div>
 
         <div class="topbar-right d-flex align-items-center justify-content-end">
-            <div class="search-box d-flex align-items-center">
+            <div class="search-box d-flex align-items-center bg-gradient">
                 <div class="icon-search-box cursor-pointer">
                     <span class="icon icon-smart-search"></span>
                 </div>
@@ -30,7 +30,7 @@
                 </div>
                 <img src="../../assets/images/icon-ai.svg" alt="" class="icon-search-box">
             </div>
-            <div class="tooltip wrap-icon d-flex justify-content-center align-items-center cursor-pointer">
+            <div class="tooltip wrap-icon wrap-icon-statistic d-flex justify-content-center align-items-center cursor-pointer bg-gradient">
                 <span class="icon icon-statistic"></span>
             </div>
             <MsButton />
@@ -370,6 +370,50 @@ function handleExportSelected() {
 .search-box {
     width: 248px;
     height: 32px;
+    border-radius: 4px;
+}
+
+.search-box::before,
+.wrap-icon-statistic::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+
+    background: linear-gradient(251deg, #9F73F1 24.05%, #4262F0 71.93%);
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+
+    pointer-events: none;
+}
+
+
+::-ms-input-placeholder {
+    color: rgb(66, 98, 240);
+    opacity: 1;
+}
+
+.bg-gradient {
+    background: linear-gradient(90deg, rgba(66, 98, 240, .1) 0%, rgba(159, 115, 241, .1) 100%), #fff;
+}
+
+.search-box:focus-within {
+    background: #fff;
+}
+
+.search-box,
+.wrap-icon-statistic {
+    position: relative;
+}
+
+::placeholder {
+    color: rgb(66, 98, 240);
+    opacity: 1;
 }
 
 .input {

@@ -75,7 +75,7 @@
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Lĩnh vực</label>
-                        <input type="text" placeholder="null" v-model="formData.customerIndustry">
+                        <input type="text" v-model="formData.customerIndustry">
                     </div>
                     <div class="d-flex field">
                         <label for="">Mã số thuế</label>
@@ -90,7 +90,7 @@
                     <div class="d-flex field">
                         <label for="">Loại khách hàng</label>
                         <select v-model="formData.customerTypeId">
-                            <option :value="null">null</option>
+                            <option :value="null"></option>
                             <option v-for="type in customerTypes" :key="type.customerTypeId"
                                 :value="type.customerTypeId">
                                 {{ type.customerTypeName }}
@@ -129,7 +129,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
 import TheTopbar from '../../layouts/TheTopbar.vue'
-import { formatDate } from '../../utils/formatter.js'
 
 const route = useRoute();
 const router = useRouter();
@@ -326,9 +325,6 @@ async function handleSaveAdd() {
     await validateEmail(formData.customerEmail);
     await validatePhone(formData.customerPhone);
 
-    if (!formData.customerEmail || !formData.customerPhone) {
-        return;
-    }
 
     const payload = buildPayload();
 

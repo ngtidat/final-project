@@ -16,7 +16,17 @@ public class CustomerDto : BaseDto
 
     public string? ShippingAddress { get; set; }
 
+    public byte Gender { get; set; }
+
     public string? CustomerPhone { get; set; }
+
+    public string? CustomerEmail { get; set; }
+
+    public string? CustomerAddress { get; set; }
+
+    public string? CustomerIndustry { get; set; }
+
+    public string? OtherPhoneNumber { get; set; }
 
     public DateTime? LastPurchaseDate { get; set; }
 

@@ -17,7 +17,7 @@
             </thead>
 
             <tbody>
-                <tr v-for="(row, rowIndex) in rows" :key="rowIndex"
+                <tr v-for="(row, rowIndex) in rows" :key="rowIndex" @click="$emit('edit-row', row)"
                     class="row-with-button">
                     <!-- Checkbox từng dòng -->
                     <td class="checkbox">
@@ -39,7 +39,7 @@
                     </td>
 
                     <!-- Nút Edit -->
-                    <button class="edit-btn" @click="$emit('edit-row', row)">Edit</button>
+                    <!-- <button class="edit-btn" @click="$emit('edit-row', row)">Edit</button> -->
                 </tr>
             </tbody>
         </table>
