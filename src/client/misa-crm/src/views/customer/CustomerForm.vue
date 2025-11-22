@@ -2,7 +2,8 @@
     <TheTopbar>
         <div class="topbar-left d-flex align-items-center">
             <div class="topbar-title">
-                <div>Thêm khách hàng</div>
+                <div v-if="isAdd">Thêm khách hàng</div>
+                <div v-else>Sửa thông tin khách hàng</div>
             </div>
             <div class="template d-flex align-items-center justify-content-center">
                 <div>Mẫu tiêu chuẩn</div>
@@ -120,7 +121,9 @@
                 </div>
             </div>
         </form>
+        <MsBaseToast v-model="show" :message="message" :type="type" />
     </div>
+
 </template>
 
 <script setup>
@@ -129,6 +132,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
 import TheTopbar from '../../layouts/TheTopbar.vue'
+import MsBaseToast from '../../components/MsBaseToast.vue'
+import { useToast } from "../../utils/toast.js";
+
+const { show, message, type, open } = useToast();
 
 const route = useRoute();
 const router = useRouter();
@@ -305,17 +312,19 @@ async function handleSave() {
         if (currentCustomerId) {
             // console.log('Data to send:', payload)
             await customerService.update(currentCustomerId, payload)
-            alert("Cập nhật thành công")
+            open("Lưu thành công!", "success")
         } else {
             // console.log('Data to send:', payload)
             await customerService.create(payload)
-            alert("Thêm mới thành công")
+            open("Lưu thành công!", "success")
         }
 
-        router.push('/customer')
+        setTimeout(() => {
+            router.push('/customer')
+        }, 1500)
     } catch (error) {
         console.log(error)
-        alert("Lỗi khi lưu khách hàng")
+        open("Đã xảy ra lỗi", "error")
     }
 }
 
@@ -331,8 +340,7 @@ async function handleSaveAdd() {
     try {
         await customerService.create(payload)
 
-        alert("Thêm mới thành công")
-
+        open("Lưu thành công!", "success")
         // Reset form
         Object.keys(formData).forEach(key => formData[key] = null);
 
@@ -340,7 +348,7 @@ async function handleSaveAdd() {
         fetchNewCustomerId();
     } catch (error) {
         console.error(error)
-        alert("Lỗi khi thêm mới")
+        open("Đã xảy ra lỗi", "error")
     }
 }
 </script>
