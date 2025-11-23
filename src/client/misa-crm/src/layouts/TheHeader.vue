@@ -16,10 +16,12 @@
             <div class="nav-item d-flex justify-content-space_between align-items-center active relative">
                 <div class="nav-icon icon icon-customer"></div>
 
-                <div class="nav-content">
-                    Khách hàng
-                    <div class="active-row"></div>
-                </div>
+                <RouterLink to="/customer" custom v-slot="{ navigate }">
+                    <div class="nav-content" @click="navigate">
+                        Khách hàng
+                        <div class="active-row"></div>
+                    </div>
+                </RouterLink>
             </div>
             <div class="nav-item d-flex justify-content-space_between align-items-center">
                 <div class="nav-icon icon icon-opportunity"></div>

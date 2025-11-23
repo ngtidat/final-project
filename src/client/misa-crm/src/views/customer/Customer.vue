@@ -248,13 +248,13 @@ async function handleFileChange(event) {
 
     try {
         await customerService.import(formData);
-        alert('Import thành công');
+        toast.open('Import thành công', 'success', 2000)
 
         // Load lại dữ liệu
         fetchCustomers();
     } catch (err) {
         console.error(err);
-        alert('Import thất bại');
+        toast.open('Import thất bại', 'error', 2000);
     }
 
     // reset input để có thể chọn lại file cùng tên
