@@ -371,9 +371,14 @@ function handleExportSelected() {
 }
 
 .search-box {
-    width: 248px;
+    width: 282px;
     height: 32px;
     border-radius: 4px;
+}
+
+.search-box,
+.wrap-icon-statistic {
+    position: relative;
 }
 
 .search-box::before,
@@ -381,10 +386,9 @@ function handleExportSelected() {
     content: "";
     position: absolute;
     inset: 0;
-    padding: 1px;
+    padding: 1px 0.5px 1.3px 1.8px;
     border-radius: inherit;
-
-    background: linear-gradient(251deg, #9F73F1 24.05%, #4262F0 71.93%);
+    background: linear-gradient(45deg, #9F73F1 24.05%, #4262F0 71.93%);
 
     -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
@@ -409,10 +413,7 @@ function handleExportSelected() {
     background: #fff;
 }
 
-.search-box,
-.wrap-icon-statistic {
-    position: relative;
-}
+
 
 ::placeholder {
     color: rgb(66, 98, 240);
@@ -422,6 +423,7 @@ function handleExportSelected() {
 .input {
     border: none;
     background-color: inherit;
+    width: 100%;
 }
 
 .icon-search-box {
