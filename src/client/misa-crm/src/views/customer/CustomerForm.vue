@@ -26,8 +26,15 @@
         <div class="avatar-title">
             Ảnh
         </div>
-        <div class="select-avatar">
-            <span class="icon-avatar"></span>
+        <div class="select-avatar" >
+            <template v-if="avatarPreview">
+                <img :src="avatarPreview" class="avatar-preview cursor-pointer" alt="avatar" @click="triggerFileInput">
+                <button class="btn-clear" @click.stop="clearAvatar">×</button>
+            </template>
+            <template v-else >
+                <span class="icon-avatar cursor-pointer" @click="triggerFileInput"></span>
+            </template>
+            <input type="file" ref="fileInput" accept="image/*" @change="handleFileChange" style="display: none;">
         </div>
 
         <div class="tilte-form">Thông tin chung</div>
@@ -143,6 +150,10 @@ const customerTypes = ref([]);
 const newCustomerId = ref(null);
 const error = ref(null);
 
+const fileInput = ref(null);
+const avatarPreview = ref(null);
+const avatarFile = ref(null);
+
 const originalEmail = ref(null);
 const originalPhone = ref(null);
 
@@ -160,7 +171,8 @@ const formData = reactive({
     lastPurchaseDate: '',
     purchaseItems: '',
     purchaseItemName: '',
-    shippingAddress: ''
+    shippingAddress: '',
+    customerAvatar: null,
 });
 
 const currentCustomerId = route.params.id || null; // lấy từ route nếu có
@@ -194,7 +206,7 @@ const fetchCustomer = async () => {
         formData.customerName = data.customerName || "";
         formData.customerPhone = data.customerPhone || "";
         formData.customerEmail = data.customerEmail || "";
-        formData.gender = data.gender !== undefined ? data.gender : null;
+        formData.gender = data.gender === undefined ? null : data.gender;
         formData.customerAddress = data.customerAddress || "";
         formData.customerIndustry = data.customerIndustry || "";
         formData.customerTaxCode = data.customerTaxCode || "";
@@ -203,9 +215,11 @@ const fetchCustomer = async () => {
         formData.purchaseItems = data.purchaseItems || "";
         formData.purchaseItemName = data.purchaseItemName || "";
         formData.shippingAddress = data.shippingAddress || "";
-
         formData.customerTypeId = data.customerType?.customerTypeId || null;
+        formData.customerAvatar = data.customerAvatar || null
 
+        avatarPreview.value = data.customerAvatar?? null;
+        
         originalEmail.value = data.customerEmail;
         originalPhone.value = data.customerPhone;
     } catch (err) {
@@ -236,7 +250,7 @@ onMounted(() => {
 });
 
 function buildPayload() {
-    return {
+    const payload = {
         CustomerName: formData.customerName || '',
         CustomerAddress: formData.customerAddress || null,
         CustomerPhone: formData.customerPhone || null,
@@ -244,13 +258,41 @@ function buildPayload() {
         CustomerTaxCode: formData.customerTaxCode || null,
         CustomerTypeId: formData.customerTypeId || null,
         CustomerIndustry: formData.customerIndustry || null,
-        Gender: formData.gender !== null ? Number(formData.gender) : null,
+        Gender: formData.gender == null ? null : Number(formData.gender),
         OtherPhoneNumber: formData.otherPhoneNumber || null,
-        LastPurchaseDate: formData.lastPurchaseDate != null ? new Date(formData.lastPurchaseDate) : null,
+        LastPurchaseDate: formData.lastPurchaseDate ? new Date(formData.lastPurchaseDate) : null,
         PurchaseItems: formData.purchaseItems || null,
         PurchaseItemName: formData.purchaseItemName || null,
-        ShippingAddress: formData.shippingAddress || null
+        ShippingAddress: formData.shippingAddress || null,
     }
+
+    // Chỉ thêm file nếu có chọn mới
+    if (avatarFile.value || avatarPreview.value) {
+        payload.Avatar = avatarFile.value;
+        payload.CustomerAvatar = avatarPreview.value;
+    }
+
+    return payload;
+}
+
+function triggerFileInput() {
+    fileInput.value.click();
+}
+
+function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    avatarFile.value = file;
+    avatarPreview.value = URL.createObjectURL(file);
+}
+
+function clearAvatar() {
+    avatarPreview.value = null;
+    avatarFile.value = null;
+    formData.customerAvatar = null;
+    // Reset input file để có thể chọn lại cùng 1 file cũng được
+    fileInput.value.value = null;
 }
 
 function handleCancel() {
@@ -337,7 +379,9 @@ async function handleSaveAdd() {
 
         toast.open("Lưu thành công!", "success", 2000)
         // Reset form
-        Object.keys(formData).forEach(key => formData[key] = null);
+        for (const key of Object.keys(formData)) {
+            formData[key] = null;
+        }
 
         fetchNewCustomerId();
     } catch (error) {
@@ -427,7 +471,29 @@ async function handleSaveAdd() {
 
 .select-avatar {
     margin-bottom: 40px;
+    position: relative;
 }
+
+.avatar-preview {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.btn-clear {
+    position: absolute;
+    top: -6px;
+    left: 40px;
+    color: red;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
 
 /* Form */
 .form-group {

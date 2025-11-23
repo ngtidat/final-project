@@ -22,11 +22,16 @@ export const customerService = {
       }
     }),
 
-  // Tạo khách hàng mới
-  create: (data) => api.post('/Customer/create', data),
+  // Tạo khách hàng mới (có thể kèm file)
+  create: (formData) => api.post('/Customer/create', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
 
-  // Cập nhật khách hàng theo id
-  update: (id, data) => api.put(`/Customer/update`, data, { params: { id } }),
+  // Cập nhật khách hàng (có thể kèm file)
+  update: (id, formData) => api.put(`/Customer/update`, formData, {
+    params: { id },
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
 
   // Xoá khách hàng theo id
   delete: (id) => api.delete(`/Customer/${id}`),

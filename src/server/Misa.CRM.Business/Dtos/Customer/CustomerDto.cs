@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Misa.CRM.Business.Dtos.CustomerType;
 using Misa.CRM.Business.MisaAttributes;
 
@@ -34,4 +35,7 @@ public class CustomerDto : BaseDto
 
     public string? PurchaseItemName { get; set; }  
 
+    public IFormFile? Avatar { get; set; }
+
+    public string? CustomerAvatar { get; set; }
 }

@@ -1,4 +1,5 @@
 using Misa.CRM.Api.Middlewares;
+using Misa.CRM.Api.Services;
 using Misa.CRM.Business.Interfaces.Repositories;
 using Misa.CRM.Business.Interfaces.Services;
 using Misa.CRM.Business.Mappings;
@@ -36,6 +37,8 @@ builder.Services.AddScoped<ICustomerTypeService, CustomerTypeService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
+builder.Services.AddScoped<IUploadFileService, UploadFileService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,5 +52,6 @@ app.UseCors("AllowClient");
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.UseStaticFiles();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.Run();
+await app.RunAsync();

@@ -47,7 +47,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
             param: new { p_customer_id = id },  
             commandType: CommandType.StoredProcedure,
             splitOn: "CustomerTypeId"
-        ).FirstOrDefault();
+        ).First();
 
         return result;
     }

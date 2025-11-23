@@ -53,7 +53,7 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
             {
                 var dto = new CustomerCreateUpdateDto
                 {
-                    CustomerName = cols.Length > 0 ? cols[0] : throw new Exception("CustomerName is required"),
+                    CustomerName = cols.Length > 0 ? cols[0] : throw new ArgumentException("CustomerName is required"),
                     CustomerAddress = cols.Length > 1 ? cols[1] : null,
                     CustomerPhone = cols.Length > 2 && !string.IsNullOrWhiteSpace(cols[2]) ? cols[2].Replace(" ", "") : null,
                     CustomerEmail = cols.Length > 3 && !string.IsNullOrWhiteSpace(cols[3]) ? cols[3] : null,
@@ -113,9 +113,9 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
     }
 
 
-    public PaginatedResult<CustomerDto> Paginate(string? strSearch, int pageIndex, int pageSize, string? sortColumn, int sortDirection)
+    public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection)
     {
-        var result = _customerRepository.SearchAndPaginate(strSearch, pageIndex, pageSize, sortColumn, sortDirection);
+        var result = _customerRepository.SearchAndPaginate(search, pageIndex, pageSize, sortColumn, sortDirection);
 
         return new PaginatedResult<CustomerDto>(
             result.PageIndex,

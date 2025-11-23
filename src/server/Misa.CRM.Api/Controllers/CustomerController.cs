@@ -12,9 +12,12 @@ public class CustomerController : ControllerBase
 {
     private readonly ICustomerService _customerService;
 
-    public CustomerController(ICustomerService customerService)
+    private readonly IUploadFileService _uploadFileService;
+
+    public CustomerController(ICustomerService customerService, IUploadFileService uploadFileService)
     {
         _customerService = customerService;
+        _uploadFileService = uploadFileService;
     }
 
     /// <summary>
@@ -57,7 +60,7 @@ public class CustomerController : ControllerBase
     {
         var customers = _customerService.GetCustomersWithType();
         var response = new ApiResponse<IEnumerable<CustomerDto>>(
-            data:customers
+            data: customers
         );
         return Ok(response);
     }
@@ -71,7 +74,7 @@ public class CustomerController : ControllerBase
     {
         var newCustomerId = _customerService.GetNewCustomerId();
         var response = new ApiResponse<string>(
-            data:newCustomerId
+            data: newCustomerId
         );
         return Ok(response);
     }
@@ -96,8 +99,16 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("create")]
-    public IActionResult Create([FromBody] CustomerCreateUpdateDto customerCreateUpdateDto)
+    public IActionResult Create([FromForm] CustomerCreateUpdateDto customerCreateUpdateDto)
     {
+        string? avatarUrl = null;
+        if (customerCreateUpdateDto.Avatar != null)
+        {
+            avatarUrl = _uploadFileService.UploadFile(customerCreateUpdateDto.Avatar);
+        }
+
+        customerCreateUpdateDto.CustomerAvatar = avatarUrl;
+
         var result = _customerService.Add(customerCreateUpdateDto);
         var response = new ApiResponse<int>(data: result);
         return Ok(response);
@@ -113,8 +124,14 @@ public class CustomerController : ControllerBase
     /// <param name="customerDto"></param>
     /// <returns></returns>
     [HttpPut("update")]
-    public IActionResult Update(string id, [FromBody] CustomerCreateUpdateDto customerCreateUpdateDto)
+    public IActionResult Update(string id, [FromForm] CustomerCreateUpdateDto customerCreateUpdateDto)
     {
+        if (customerCreateUpdateDto.Avatar != null)
+        {
+            string avatarUrl = _uploadFileService.UploadFile(customerCreateUpdateDto.Avatar);
+            customerCreateUpdateDto.CustomerAvatar = avatarUrl;
+        }
+
         var result = _customerService.Update(id, customerCreateUpdateDto);
         var response = new ApiResponse<int>(data: result);
         return Ok(response);

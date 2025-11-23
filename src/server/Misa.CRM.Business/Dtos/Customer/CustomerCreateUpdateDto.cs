@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Misa.CRM.Business.MisaAttributes;
 
 namespace Misa.CRM.Business.Dtos.Customer;
@@ -37,4 +38,8 @@ public class CustomerCreateUpdateDto
     public string? PurchaseItemName { get; set; }
 
     public string? ShippingAddress { get; set; }
+
+    public IFormFile? Avatar { get; set; }
+
+    public string? CustomerAvatar { get; set; }
 }

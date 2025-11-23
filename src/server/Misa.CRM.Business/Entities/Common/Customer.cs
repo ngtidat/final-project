@@ -56,5 +56,8 @@ public class Customer : BaseEntity
 
     [MisaColumn("shipping_address")]
     public string? ShippingAddress { get; set; }
+
+    [MisaColumn("customer_avatar")]
+    public string? CustomerAvatar { get; set; }
 }
 
