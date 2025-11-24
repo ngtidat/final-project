@@ -109,6 +109,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
         parameters.Add("p_customer_type_id", entity.CustomerTypeId);
         parameters.Add("p_customer_industry", entity.CustomerIndustry);
         parameters.Add("p_gender", entity.Gender);
+        parameters.Add("p_customer_avatar", entity.CustomerAvatar);
         parameters.Add("p_other_phone_number", entity.OtherPhoneNumber);
         parameters.Add("p_last_purchase_date", entity.LastPurchaseDate);
         parameters.Add("p_purchase_items", entity.PurchaseItems);

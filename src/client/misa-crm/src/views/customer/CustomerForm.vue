@@ -26,12 +26,12 @@
         <div class="avatar-title">
             Ảnh
         </div>
-        <div class="select-avatar" >
+        <div class="select-avatar">
             <template v-if="avatarPreview">
                 <img :src="avatarPreview" class="avatar-preview cursor-pointer" alt="avatar" @click="triggerFileInput">
                 <button class="btn-clear" @click.stop="clearAvatar">×</button>
             </template>
-            <template v-else >
+            <template v-else>
                 <span class="icon-avatar cursor-pointer" @click="triggerFileInput"></span>
             </template>
             <input type="file" ref="fileInput" accept="image/*" @change="handleFileChange" style="display: none;">
@@ -41,31 +41,40 @@
 
         <form action="">
             <div class="form-container d-flex flex-direction-column">
+
+                <!-- Row 1 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Mã khách hàng</label>
                         <input type="text" disabled :value="currentCustomerId ?? newCustomerId">
                     </div>
+
                     <div class="d-flex field">
                         <label for="">
                             Tên khách hàng
                             <span class="required">*</span>
                         </label>
-                        <input type="text" v-model="formData.customerName">
+                        <MsInput v-model="formData.customerName" :error="errors.customerName"
+                            @input="errors.customerName = ''" @blur="() => validateName(formData.customerName)" />
                     </div>
                 </div>
+
+                <!-- Row 2 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Số điện thoại</label>
-                        <input type="text" v-model="formData.customerPhone"
-                            @blur="() => validatePhone(formData.customerPhone)">
+                        <MsInput v-model="formData.customerPhone" :error="errors.customerPhone"
+                            @input="errors.customerPhone = ''" @blur="() => validatePhone(formData.customerPhone)" />
                     </div>
+
                     <div class="d-flex field">
                         <label for="">Email</label>
-                        <input type="text" v-model="formData.customerEmail"
-                            @blur="() => validateEmail(formData.customerEmail)">
+                        <MsInput v-model="formData.customerEmail" :error="errors.customerEmail"
+                            @input="errors.customerEmail = ''" @blur="() => validateEmail(formData.customerEmail)" />
                     </div>
                 </div>
+
+                <!-- Row 3 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Giới tính</label>
@@ -75,26 +84,33 @@
                             <option :value="0">Nữ</option>
                         </select>
                     </div>
+
                     <div class="d-flex field">
                         <label for="">Địa chỉ</label>
-                        <input type="text" v-model="formData.customerAddress">
+                        <MsInput v-model="formData.customerAddress" />
                     </div>
                 </div>
+
+                <!-- Row 4 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Lĩnh vực</label>
-                        <input type="text" v-model="formData.customerIndustry">
+                        <MsInput v-model="formData.customerIndustry" />
                     </div>
+
                     <div class="d-flex field">
                         <label for="">Mã số thuế</label>
-                        <input type="text" v-model="formData.customerTaxCode">
+                        <MsInput v-model="formData.customerTaxCode" />
                     </div>
                 </div>
+
+                <!-- Row 5 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Số điện thoại khác</label>
-                        <input type="text" v-model="formData.otherPhoneNumber">
+                        <MsInput v-model="formData.otherPhoneNumber" />
                     </div>
+
                     <div class="d-flex field">
                         <label for="">Loại khách hàng</label>
                         <select v-model="formData.customerTypeId">
@@ -106,26 +122,35 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Row 6 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Ngày mua gần nhất</label>
-                        <input type="date" v-model="formData.lastPurchaseDate">
+                        <MsInput>
+                            <input type="date" v-model="formData.lastPurchaseDate">
+                        </MsInput>
                     </div>
+
                     <div class="d-flex field">
                         <label for="">Hàng hóa đã mua</label>
-                        <input type="text" v-model="formData.purchaseItems">
+                        <MsInput v-model="formData.purchaseItems" />
                     </div>
                 </div>
+
+                <!-- Row 7 -->
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Tên hàng hóa mua</label>
-                        <input type="text" v-model="formData.purchaseItemName">
+                        <MsInput v-model="formData.purchaseItemName" />
                     </div>
+
                     <div class="d-flex field">
                         <label for="">Địa chỉ giao hàng</label>
-                        <input type="text" v-model="formData.shippingAddress">
+                        <MsInput v-model="formData.shippingAddress" />
                     </div>
                 </div>
+
             </div>
         </form>
     </div>
@@ -138,6 +163,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
 import TheTopbar from '../../layouts/TheTopbar.vue'
+import MsInput from '../../components/MsInput.vue'
 
 const toast = inject('toast');
 if (!toast) throw new Error('Toast not provided!');
@@ -173,6 +199,12 @@ const formData = reactive({
     purchaseItemName: '',
     shippingAddress: '',
     customerAvatar: null,
+});
+
+const errors = reactive({
+    customerName: "",
+    customerEmail: null,
+    customerPhone: null
 });
 
 const currentCustomerId = route.params.id || null; // lấy từ route nếu có
@@ -218,8 +250,8 @@ const fetchCustomer = async () => {
         formData.customerTypeId = data.customerType?.customerTypeId || null;
         formData.customerAvatar = data.customerAvatar || null
 
-        avatarPreview.value = data.customerAvatar?? null;
-        
+        avatarPreview.value = data.customerAvatar ?? null;
+
         originalEmail.value = data.customerEmail;
         originalPhone.value = data.customerPhone;
     } catch (err) {
@@ -264,6 +296,8 @@ function buildPayload() {
         PurchaseItems: formData.purchaseItems || null,
         PurchaseItemName: formData.purchaseItemName || null,
         ShippingAddress: formData.shippingAddress || null,
+        Avatar: avatarFile.value || null,
+        CustomerAvatar: avatarPreview.value || null
     }
 
     // Chỉ thêm file nếu có chọn mới
@@ -301,7 +335,7 @@ function handleCancel() {
 
 function validateName(name) {
     if (!name || !name.trim()) {
-        alert("Tên khách hàng không được bỏ trống");
+        errors.customerName = name?.trim() ? "" : "Tên không được để trống";
         return false;
     }
     return true;
@@ -314,10 +348,8 @@ async function validateEmail(email) {
 
     try {
         const res = await customerService.checkExistEmail(email);
-        // console.log(res.data.data)
         if (res.data.data) {
-            alert("Email đã tồn tại");
-            formData.customerEmail = '';
+            errors.customerEmail = "Email đã tồn tại";
         }
     } catch (err) {
         console.error(err.response?.data);
@@ -332,8 +364,7 @@ async function validatePhone(phone) {
     try {
         const res = await customerService.checkExistPhone(phone);
         if (res.data.data) {
-            alert("Số điện thoại đã tồn tại");
-            formData.customerPhone = '';
+            errors.customerPhone = "Số điện thoại đã tồn tại";
         }
     } catch (err) {
         console.error(err.response?.data);
