@@ -242,4 +242,22 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
 
         return result;
     }
+
+    public int ChangeCustomerType(List<string> ids, Guid? customerTypeId)
+    {
+        using var connection = _context.CreateConnection();
+        int result = 0;
+        foreach (var id in ids)
+        {
+            result += connection.Execute(
+                "CALL proc_change_customer_type(@p_customer_id, @p_customer_type_id)",
+                new
+                {
+                    p_customer_id = id,
+                    p_customer_type_id = customerTypeId
+                }
+            );
+        }
+        return result;
+    }
 }

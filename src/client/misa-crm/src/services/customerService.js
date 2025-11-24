@@ -49,5 +49,11 @@ export const customerService = {
 
   checkExistPhone: (phone) => api.get('/Customer/check-exist-phone', {
     params: { phone }
-  })
+  }),
+
+  changeCustomerTypeMany: (ids, typeId) =>
+    api.put('/Customer/change-customer-type', {
+      ids: ids,
+      customerTypeId: typeId
+    })
 };

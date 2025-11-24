@@ -55,4 +55,12 @@ public interface ICustomerService : IBaseService<Customer, CustomerDto, Customer
     /// <param name="phone"></param>
     /// <returns>1-tồn tại hoặc 0-chưa tồn tại</returns>
     public int CheckPhoneUnique(string phone);
+
+    /// <summary>
+    /// Thay đổi loại khách hàng
+    /// </summary>
+    /// <param name="ids">Danh sách khách hàng thay đổi</param>
+    /// <param name="id">Mã loại khách hàng</param>
+    /// <returns>Số bản ghi thay đổi</returns>
+    public int ChangeCustomerType(List<string> ids, Guid? customerTypeId);
 }

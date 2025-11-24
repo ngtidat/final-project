@@ -110,4 +110,9 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
     {
         return _customerRepository.CheckPhoneUnique(phone);
     }
+
+    public int ChangeCustomerType(List<string> ids, Guid? customerTypeId)
+    {
+        return _customerRepository.ChangeCustomerType(ids, customerTypeId);
+    }
 }

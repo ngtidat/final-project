@@ -208,4 +208,20 @@ public class CustomerController : ControllerBase
         );
         return Ok(response);
     }
+
+    /// <summary>
+    /// Thay đổi loại khách hàng
+    /// </summary>
+    /// <param name="changeCustomerTypeDto">Dánh sách khách hàng và mã loại KH</param>
+    /// <returns>Số bản ghi thay đổi</returns>
+    [HttpPut("change-customer-type")]
+    public IActionResult ChangeCustomerType([FromBody] ChangeCustomerTypeDto changeCustomerTypeDto)
+    {
+        var result = _customerService.ChangeCustomerType(changeCustomerTypeDto.Ids, changeCustomerTypeDto.CustomerTypeId);
+        var response = new ApiResponse<int>
+        (
+            data: result
+        );
+        return Ok(response);
+    }
 }

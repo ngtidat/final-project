@@ -10,13 +10,21 @@
             <div class="reload d-flex align-items-center justify-content-center" @click="handleReload">
                 <span class="icon icon-reload"></span>
             </div>
-            <div v-if="selectedItems.length > 0" class="select-item">
-                Đã chọn {{ selectedItems.length }}
-            </div>
 
-            <div v-if="selectedItems.length > 0" class="select-item">
-                <a class="delete-item" @click="handleDeleteSelected">Xóa hàng đã chọn</a>
-            </div>
+            <template v-if="selectedItems.length > 0">
+                <div class="select-item">
+                    Đã chọn {{ selectedItems.length }}
+                </div>
+
+                <div class="select-item d-flex align-items-center justify-content-center"
+                    @click="openCustomerTypePopup">
+                    <div class="change-customer-type">Gán loại khách hàng</div>
+                </div>
+
+                <div class="select-item">
+                    <a class="delete-item" @click="handleDeleteSelected">Xóa hàng đã chọn</a>
+                </div>
+            </template>
         </div>
 
         <div class="topbar-right d-flex align-items-center justify-content-end">
@@ -93,8 +101,8 @@
         </MsTable>
     </div>
 
-    <MsConfirmPopup :visible="deleteConfirm.visible" :message="deleteConfirm.message"
-        @confirm="handleConfirmDelete" @cancel="deleteConfirm.visible = false" />
+    <MsConfirmPopup :visible="deleteConfirm.visible" :message="deleteConfirm.message" @confirm="handleConfirmDelete"
+        @cancel="deleteConfirm.visible = false" />
 
     <div v-if="importResult.visible" class="import-popup">
         <div class="popup-content">
@@ -115,6 +123,25 @@
             <button @click="importResult.visible = false" class="">Đóng</button>
         </div>
     </div>
+
+    <div v-if="assignPopup.visible" class="assign-popup">
+        <div class="assign-popup-content">
+            <h3>Gán loại khách hàng</h3>
+
+            <label for="">Chọn loại khách hàng:</label>
+            <select v-model="assignPopup.selectedTypeId" class="dropdown">
+                <option value="">-- Chọn loại khách hàng --</option>
+                <option v-for="ct in customerTypes" :key="ct.customerTypeId" :value="ct.customerTypeId">
+                    {{ ct.customerTypeName }}
+                </option>
+            </select>
+
+            <div class="actions">
+                <button @click="confirmAssign" class="btn-primary">Xác nhận</button>
+                <button @click="assignPopup.visible = false" class="btn-secondary">Hủy</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -125,6 +152,7 @@ import TheTopbar from '../../layouts/TheTopbar.vue';
 import MsTable from '../../components/MsTable.vue';
 import { customerService } from '../../services/customerService.js';
 import MsConfirmPopup from '../../components/MsConfirmPopup.vue';
+import { customerTypeService} from '../../services/customerTypeService.js';
 
 const router = useRouter()
 
@@ -358,6 +386,52 @@ function handleExportSelected() {
     link.setAttribute('download', `SelectedCustomers_${Date.now()}.csv`);
     link.click();
 }
+
+// Popup gán loại khách hàng
+const assignPopup = reactive({
+    visible: false,
+    selectedTypeId: ''
+});
+
+const customerTypes = ref([]);
+
+async function openCustomerTypePopup() {
+    if (!selectedItems.value.length) {
+        toast.open("Bạn chưa chọn khách hàng nào!", "warning", 1500);
+        return;
+    }
+
+    // Load loại khách hàng
+    const res = await customerTypeService.getAll();
+    customerTypes.value = res.data.data;
+
+    assignPopup.visible = true;
+}
+
+async function confirmAssign() {
+    if (!assignPopup.selectedTypeId) {
+        toast.open("Vui lòng chọn loại khách hàng!", "error", 1500);
+        return;
+    }
+
+    const ids = selectedItems.value.map(x => x.customerId);
+
+    try {
+        await customerService.changeCustomerTypeMany(ids, assignPopup.selectedTypeId);
+
+        toast.open("Gán loại khách hàng thành công!", "success", 2000);
+
+        assignPopup.visible = false;
+        selectedItems.value = [];
+        msTableRef.value.clearSelection();
+        fetchCustomers();
+
+    } catch (err) {
+        toast.open("Gán loại thất bại!", "error", 2000);
+        console.error(err);
+    }
+}
+
 </script>
 
 <style scoped>
@@ -410,6 +484,22 @@ function handleExportSelected() {
     margin: 0 8px;
 }
 
+.change-customer-type {
+    height: 32px;
+    font-weight: 500;
+    font-size: 13px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #d3d7de !important;
+    cursor: pointer;
+    padding: 4px 8px;
+    color: #1f2229;
+}
+
+.change-customer-type:hover {
+    background-color: #f0f2f4;
+}
+
 .icon {
     background-color: rgb(77 80 83);
 }
@@ -456,8 +546,6 @@ function handleExportSelected() {
 .search-box:focus-within {
     background: #fff;
 }
-
-
 
 ::placeholder {
     color: rgb(66, 98, 240);
@@ -575,5 +663,59 @@ function handleExportSelected() {
 
 .import-popup button:active {
     background-color: #233aa0;
+}
+
+/* Change customer type popup */
+.assign-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.assign-popup .assign-popup-content {
+    width: 400px;
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+.assign-popup-content h3 {
+    padding-bottom: 16px;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-primary {
+    background: #4262f0;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #ddd;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
 }
 </style>
