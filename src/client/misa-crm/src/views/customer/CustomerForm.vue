@@ -436,7 +436,7 @@ async function handleSaveAdd() {
 .topbar-title,
 .template {
     color: #1f2229;
-    font-weight: 500;
+    font-weight: 600;
     margin-right: 8px;
 }
 
@@ -490,14 +490,14 @@ async function handleSaveAdd() {
 .main-content {
     padding-top: 32px;
     margin-left: 56px;
-    margin-right: 200px;
+    margin-right: 280px;
 }
 
 .avatar-title,
 .tilte-form {
     font-size: 20px !important;
     font-weight: 500;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .select-avatar {
@@ -530,7 +530,7 @@ async function handleSaveAdd() {
 .form-group {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .field {
@@ -540,7 +540,7 @@ async function handleSaveAdd() {
 }
 
 .field label {
-    width: 180px;
+    width: 160px;
     font-size: 13px;
     color: #1f2229;
     font-weight: 500;

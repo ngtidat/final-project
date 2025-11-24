@@ -45,6 +45,10 @@ function handleInput(e) {
     width: 100%;
 }
 
+.input-control:focus {
+    border: 1px solid #4262f0;
+}
+
 .error-msg {
     color: red;
     font-size: 12px;
