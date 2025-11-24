@@ -93,6 +93,9 @@
         </MsTable>
     </div>
 
+    <MsConfirmPopup :visible="deleteConfirm.visible" :message="deleteConfirm.message"
+        @confirm="handleConfirmDelete" @cancel="deleteConfirm.visible = false" />
+
     <div v-if="importResult.visible" class="import-popup">
         <div class="popup-content">
             <h3>Kết quả Import</h3>
@@ -121,6 +124,7 @@ import MsButton from '../../components/MsButton.vue';
 import TheTopbar from '../../layouts/TheTopbar.vue';
 import MsTable from '../../components/MsTable.vue';
 import { customerService } from '../../services/customerService.js';
+import MsConfirmPopup from '../../components/MsConfirmPopup.vue';
 
 const router = useRouter()
 
@@ -143,6 +147,10 @@ const selectedItems = ref([])
 
 const msTableRef = ref(null)
 
+const deleteConfirm = reactive({
+    visible: false,
+    message: ''
+});
 
 // Gom mọi tham số vào 1 computed
 const queryParams = computed(() => ({
@@ -228,30 +236,27 @@ function handleReload() {
     fetchCustomers();
 }
 
-async function handleDeleteSelected() {
+function handleDeleteSelected() {
     if (!selectedItems.value.length) return;
 
-    const confirmDelete = confirm(`Bạn có chắc muốn xóa ${selectedItems.value.length} khách hàng?`);
-    if (!confirmDelete) return;
+    deleteConfirm.message = `Bạn có chắc muốn xóa ${selectedItems.value.length} khách hàng?`;
+    deleteConfirm.visible = true;
+}
 
+async function handleConfirmDelete() {
     try {
-        // Lấy mảng id từ các hàng đã chọn
         const ids = selectedItems.value.map(item => item.customerId);
-
-        console.log(ids);
-
-        // Gọi API xóa nhiều
         await customerService.deleteMulti(ids);
 
-        toast.open("Xóa thành công!", "success", 2000)
-
-        // Load lại dữ liệu và reset selection
+        toast.open("Xóa thành công!", "success", 2000);
         selectedItems.value = [];
         msTableRef.value.clearSelection();
         fetchCustomers();
-    } catch (error) {
-        console.error(error);
-        toast.open("Đã có lỗi xảy ra!. Xóa thất bại!", "error", 2000)
+    } catch (err) {
+        console.error(err);
+        toast.open("Xóa thất bại!", "error", 2000);
+    } finally {
+        deleteConfirm.visible = false;
     }
 }
 
@@ -528,44 +533,47 @@ function handleExportSelected() {
 
 /* Import result */
 .import-popup {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
 }
 
 .popup-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 500px;
-  max-height: 70vh;
-  overflow-y: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 .import-popup button {
-  background-color: #4262F0; /* màu chính theme */
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  margin-top: 16px;
-  display: block;
-  margin-left: auto; /* đưa sang phải */
+    background-color: #4262F0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 16px;
+    display: block;
+    margin-left: auto;
 }
 
 .import-popup button:hover {
-  background-color: #3149c6;
+    background-color: #3149c6;
 }
 
 .import-popup button:active {
-  background-color: #233aa0;
+    background-color: #233aa0;
 }
 </style>
