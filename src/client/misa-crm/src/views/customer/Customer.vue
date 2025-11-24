@@ -30,7 +30,8 @@
                 </div>
                 <img src="../../assets/images/icon-ai.svg" alt="" class="icon-search-box">
             </div>
-            <div class="tooltip wrap-icon wrap-icon-statistic d-flex justify-content-center align-items-center cursor-pointer bg-gradient">
+            <div
+                class="tooltip wrap-icon wrap-icon-statistic d-flex justify-content-center align-items-center cursor-pointer bg-gradient">
                 <span class="icon icon-statistic"></span>
             </div>
             <MsButton />
@@ -91,10 +92,30 @@
             </template>
         </MsTable>
     </div>
+
+    <div v-if="importResult.visible" class="import-popup">
+        <div class="popup-content">
+            <h3>Kết quả Import</h3>
+            <p>Tổng số bản ghi: {{ importResult.total }}</p>
+            <p>Thành công: {{ importResult.success }}</p>
+            <p>Thất bại: {{ importResult.failed }}</p>
+
+            <div v-if="importResult.errors.length">
+                <h4>Danh sách lỗi:</h4>
+                <ul>
+                    <li v-for="err in importResult.errors" :key="err.rowIndex">
+                        Dòng {{ err.rowIndex }}: {{ err.error }}
+                    </li>
+                </ul>
+            </div>
+
+            <button @click="importResult.visible = false" class="">Đóng</button>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, inject } from 'vue';
+import { ref, onMounted, computed, watch, inject, reactive } from 'vue';
 import { useRouter } from 'vue-router'
 import MsButton from '../../components/MsButton.vue';
 import TheTopbar from '../../layouts/TheTopbar.vue';
@@ -119,6 +140,9 @@ const sortDirection = ref(0);
 
 const totalRecords = ref(0);
 const selectedItems = ref([])
+
+const msTableRef = ref(null)
+
 
 // Gom mọi tham số vào 1 computed
 const queryParams = computed(() => ({
@@ -194,7 +218,6 @@ const handleSelection = (rows) => {
     selectedItems.value = rows
 };
 
-const msTableRef = ref(null)
 function handleReload() {
     pageIndex.value = 1;
 
@@ -235,6 +258,14 @@ async function handleDeleteSelected() {
 // Import 
 const fileInput = ref(null);
 
+const importResult = reactive({
+    visible: false,
+    total: 0,
+    success: 0,
+    failed: 0,
+    errors: []
+});
+
 function openFileDialog() {
     fileInput.value.click();
 }
@@ -247,7 +278,15 @@ async function handleFileChange(event) {
     formData.append('file', file);
 
     try {
-        await customerService.import(formData);
+        const res = await customerService.import(formData);
+
+        importResult.total = res.data.data.total;
+        importResult.success = res.data.data.success;
+        importResult.failed = res.data.data.failed;
+        importResult.errors = res.data.data.errors || [];
+
+        importResult.visible = true;
+
         toast.open('Import thành công', 'success', 2000)
 
         // Load lại dữ liệu
@@ -394,7 +433,7 @@ function handleExportSelected() {
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-            mask-composite: exclude;
+    mask-composite: exclude;
 
     pointer-events: none;
 }
@@ -485,5 +524,48 @@ function handleExportSelected() {
     color: red;
     cursor: pointer;
     text-decoration: underline;
+}
+
+/* Import result */
+.import-popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.import-popup button {
+  background-color: #4262F0; /* màu chính theme */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-top: 16px;
+  display: block;
+  margin-left: auto; /* đưa sang phải */
+}
+
+.import-popup button:hover {
+  background-color: #3149c6;
+}
+
+.import-popup button:active {
+  background-color: #233aa0;
 }
 </style>

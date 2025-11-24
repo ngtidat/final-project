@@ -44,7 +44,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
                 customer.CustomerType = customerType;
                 return customer;
             },
-            param: new { p_customer_id = id },  
+            param: new { p_customer_id = id },
             commandType: CommandType.StoredProcedure,
             splitOn: "CustomerTypeId"
         ).First();
@@ -139,33 +139,64 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
             foreach (var customer in customers)
             {
                 index++;
-                customer.CreatedAt = DateTime.Now;
-                var parameters = new DynamicParameters();
-                parameters.Add("p_customer_name", customer.CustomerName);
-                parameters.Add("p_customer_address", customer.CustomerAddress);
-                parameters.Add("p_customer_phone", customer.CustomerPhone);
-                parameters.Add("p_customer_email", customer.CustomerEmail);
-                parameters.Add("p_customer_tax_code", customer.CustomerTaxCode);
-                parameters.Add("p_customer_type_id", customer.CustomerTypeId);
-                parameters.Add("p_customer_industry", customer.CustomerIndustry);
-                parameters.Add("p_gender", customer.Gender);
-                parameters.Add("p_other_phone_number", customer.OtherPhoneNumber);
-                parameters.Add("p_last_purchase_date", customer.LastPurchaseDate);
-                parameters.Add("p_purchase_items", customer.PurchaseItems);
-                parameters.Add("p_purchase_item_name", customer.PurchaseItemName);
-                parameters.Add("p_shipping_address", customer.ShippingAddress);
-                parameters.Add("p_created_at", customer.CreatedAt);
 
-                connection.ExecuteScalar<string>(
-                    "proc_add_customer",
-                    parameters,
-                    commandType: CommandType.StoredProcedure,
-                    transaction: transaction
-                );
+                try
+                {
+                    customer.CreatedAt = DateTime.Now;
 
-                result.Success++;
+                    var parameters = new DynamicParameters();
+                    parameters.Add("p_customer_name", customer.CustomerName);
+                    parameters.Add("p_customer_address", customer.CustomerAddress);
+                    parameters.Add("p_customer_phone", customer.CustomerPhone);
+                    parameters.Add("p_customer_email", customer.CustomerEmail);
+                    parameters.Add("p_customer_tax_code", customer.CustomerTaxCode);
+                    parameters.Add("p_customer_type_id", customer.CustomerTypeId);
+                    parameters.Add("p_customer_industry", customer.CustomerIndustry);
+                    parameters.Add("p_gender", customer.Gender);
+                    parameters.Add("p_customer_avatar", null);
+                    parameters.Add("p_other_phone_number", customer.OtherPhoneNumber);
+                    parameters.Add("p_last_purchase_date", customer.LastPurchaseDate);
+                    parameters.Add("p_purchase_items", customer.PurchaseItems);
+                    parameters.Add("p_purchase_item_name", customer.PurchaseItemName);
+                    parameters.Add("p_shipping_address", customer.ShippingAddress);
+                    parameters.Add("p_created_at", customer.CreatedAt);
+
+                    connection.ExecuteScalar<string>(
+                        "proc_add_customer",
+                        parameters,
+                        commandType: CommandType.StoredProcedure,
+                        transaction: transaction
+                    );
+
+                    result.Success++;
+                }
+                catch (Exception ex)
+                {
+                    result.Failed++;
+
+                    string errorMessage = ex.Message;
+
+                    // Nếu là lỗi duplicate key MySQL
+                    if (errorMessage.Contains("Duplicate entry"))
+                    {
+                        if (errorMessage.Contains("customer_email"))
+                            errorMessage = $"Email '{customer.CustomerEmail}' đã tồn tại.";
+                        else if (errorMessage.Contains("customer_phone"))
+                            errorMessage = $"Số điện thoại '{customer.CustomerPhone}' đã tồn tại.";
+                        else
+                            errorMessage = "Dữ liệu đã tồn tại";
+                    }
+
+                    result.Errors.Add(new ImportErrorRow
+                    {
+                        RowIndex = index,
+                        Error = errorMessage
+                    });
+                }
+
             }
 
+            // Commit các dòng thành công
             transaction.Commit();
         }
         catch
@@ -174,9 +205,9 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
             throw;
         }
 
-
         return result;
     }
+
 
     public string GetNewCustomerId()
     {

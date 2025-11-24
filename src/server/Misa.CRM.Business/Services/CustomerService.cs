@@ -82,32 +82,8 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
 
         // Map DTO → Entity
         var customers = _mapper.Map<List<Customer>>(dtos);
-
-        // Validate Entity theo Attribute
-        foreach (var c in customers.ToList())
-        {
-            try
-            {
-                ValidateEntity(c);
-            }
-            catch (Exception ex)
-            {
-                errors.Add(new ImportErrorRow
-                {
-                    RowIndex = rowIndex,
-                    Error = ex.Message
-                });
-
-                customers.Remove(c);
-            }
-        }
-
-        // Bulk Insert vào DB
+        
         var importResult = _customerRepository.Import(customers);
-
-        importResult.Errors.AddRange(errors);
-        importResult.Failed = importResult.Errors.Count;
-        importResult.Total = customers.Count + importResult.Failed;
 
         return importResult;
     }
