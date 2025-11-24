@@ -164,6 +164,7 @@ import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
 import TheTopbar from '../../layouts/TheTopbar.vue'
 import MsInput from '../../components/MsInput.vue'
+import { checkEmailFormat, checkPhoneFormat } from '../../utils/validate.js'
 
 const toast = inject('toast');
 if (!toast) throw new Error('Toast not provided!');
@@ -344,6 +345,11 @@ function validateName(name) {
 async function validateEmail(email) {
     if (!email) return;
 
+    if (!checkEmailFormat(email)) {
+        errors.customerEmail = "Email không đúng format";
+        return;
+    }
+
     if (currentCustomerId && email === originalEmail.value) return;
 
     try {
@@ -358,6 +364,11 @@ async function validateEmail(email) {
 
 async function validatePhone(phone) {
     if (!phone) return;
+
+    if (!checkPhoneFormat(phone)) {
+        errors.customerPhone = "Số điện thoại từ 10-11 số";
+        return;
+    }
 
     if (currentCustomerId && phone === originalPhone.value) return;
 
