@@ -16,6 +16,10 @@ public class CustomerTypeController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Lấy ra danh sách của loại khách hàng
+    /// </summary>
+    /// <returns>Danh sách loại khách hàng</returns>
     [HttpGet]
     public IActionResult GetAll()
     {
