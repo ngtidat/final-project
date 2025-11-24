@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Collation>utf8mb4_0900_as_ci</Collation>
+  <ServerVersion>8.0.44</ServerVersion>
+  <Entity>misa.crm</Entity>
+  <ServerType>MySql</ServerType>
+  <SupportsConnectEngine>False</SupportsConnectEngine>
+  <SqlMode>ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION</SqlMode>
+</Configuration>
