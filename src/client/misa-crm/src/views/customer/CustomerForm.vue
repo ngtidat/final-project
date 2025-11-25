@@ -78,11 +78,20 @@
                 <div class="form-group d-flex align-items-center justify-content-space-between">
                     <div class="d-flex field">
                         <label for="">Giới tính</label>
-                        <select v-model="formData.gender">
-                            <option :value="null"></option>
-                            <option :value="1">Nam</option>
-                            <option :value="0">Nữ</option>
-                        </select>
+                        <div class="custom-select" @click="toggleGenderDropdown" :class="{ active: isGenderOpen}">
+                            <div class="custom-select-display">
+                                {{ selectedGenderLabel }}
+                            </div>
+
+                            <span class="icon icon-angle-down"></span>
+
+                            <div class="custom-dropdown" v-if="isGenderOpen">
+                                <div class="dropdown-item" @click.stop="selectGender(null, '')">Không chọn</div>
+                                <div class="dropdown-item" @click.stop="selectGender(0, 'Nam')">Nam</div>
+                                <div class="dropdown-item" @click.stop="selectGender(1, 'Nữ')">Nữ</div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="d-flex field">
@@ -113,13 +122,23 @@
 
                     <div class="d-flex field">
                         <label for="">Loại khách hàng</label>
-                        <select v-model="formData.customerTypeId">
-                            <option :value="null"></option>
-                            <option v-for="type in customerTypes" :key="type.customerTypeId"
-                                :value="type.customerTypeId">
-                                {{ type.customerTypeName }}
-                            </option>
-                        </select>
+                        <div class="custom-select" @click="toggleCustomerTypeDropdown" :class="{ active: isCustomerTypeOpen }">
+                            <div class="custom-select-display">
+                                {{ selectedCustomerTypeLabel }}
+                            </div>
+
+                            <span class="icon icon-angle-down"></span>
+
+                            <div class="custom-dropdown" v-if="isCustomerTypeOpen">
+                                <div class="dropdown-item" @click.stop="selectCustomerType(null, '')">Không chọn</div>
+
+                                <div class="dropdown-item" v-for="type in customerTypes" :key="type.customerTypeId"
+                                    @click.stop="selectCustomerType(type.customerTypeId, type.customerTypeName)">
+                                    {{ type.customerTypeName }}
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -158,7 +177,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, inject } from 'vue'
+import { ref, reactive, onMounted, inject, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { customerTypeService } from '../../services/customerTypeService.js'
 import { customerService } from '../../services/customerService.js'
@@ -268,7 +287,6 @@ function formatDateForInput(dateStr) {
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
-
 
 onMounted(() => {
     fetchCustomerTypes();
@@ -431,6 +449,40 @@ async function handleSaveAdd() {
         toast.open("Đã xảy ra lỗi", "error", 2000)
     }
 }
+
+const isGenderOpen = ref(false);
+
+const selectedGenderLabel = computed(() => {
+    if (formData.gender === null) return "";
+    return formData.gender === 0 ? "Nam" : "Nữ";
+});
+
+function toggleGenderDropdown() {
+    isGenderOpen.value = !isGenderOpen.value;
+}
+
+function selectGender(value, label) {
+    formData.gender = value;
+    isGenderOpen.value = false;
+}
+
+const isCustomerTypeOpen = ref(false);
+
+const selectedCustomerTypeLabel = computed(() => {
+    if (!formData.customerTypeId) return "";
+
+    const found = customerTypes.value.find(t => t.customerTypeId === formData.customerTypeId);
+    return found?.customerTypeName ?? "";
+});
+
+function toggleCustomerTypeDropdown() {
+    isCustomerTypeOpen.value = !isCustomerTypeOpen.value;
+}
+
+function selectCustomerType(id, name) {
+    formData.customerTypeId = id;
+    isCustomerTypeOpen.value = false;
+}
 </script>
 
 <style scoped>
@@ -569,5 +621,55 @@ async function handleSaveAdd() {
 
 .required {
     color: red;
+}
+
+/* Custom select */
+.custom-select {
+    position: relative;
+    flex: 1;
+    height: 32px;
+    border: 1px solid #d3d7de;
+    border-radius: 4px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: #fff;
+}
+
+.custom-select-display {
+    flex: 1;
+    font-size: 13px;
+    color: #1f2229;
+}
+
+.custom-select .icon-angle-down {
+    opacity: 0.4;
+}
+
+.custom-dropdown {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    width: 100%;
+    border: 1px solid #d3d7de;
+    background: white;
+    border-radius: 4px;
+    z-index: 20;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f2f5;
+}
+
+.custom-select.active {
+    border: 1px solid #4262f0
 }
 </style>

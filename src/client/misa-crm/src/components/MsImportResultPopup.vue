@@ -113,37 +113,6 @@
     <MsConfirmPopup :visible="deleteConfirm.visible" :message="deleteConfirm.message" @confirm="handleConfirmDelete"
         @cancel="deleteConfirm.visible = false" />
 
-    <div v-if="importResult.visible" class="import-popup">
-        <div class="popup-content">
-            <h3>Kết quả Import</h3>
-            <p>Tổng số bản ghi: {{ importResult.total }}</p>
-            <p>Thành công: {{ importResult.success }}</p>
-            <p>Thất bại: {{ importResult.failed }}</p>
-
-            <div v-if="importResult.errors.length">
-                <h4>Danh sách lỗi:</h4>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dòng lỗi</th>
-                            <th>Chi tiết</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr v-for="error in importResult.errors">
-                            <td>{{ error.rowIndex }}</td>
-                            <td>{{ error.error }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <button @click="importResult.visible = false" class="">Đóng</button>
-        </div>
-    </div>
-
     <div v-if="assignPopup.visible" class="assign-popup">
         <div class="assign-popup-content">
             <h3>Gán loại khách hàng</h3>
