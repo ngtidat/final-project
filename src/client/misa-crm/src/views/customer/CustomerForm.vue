@@ -127,7 +127,7 @@
                                 {{ selectedCustomerTypeLabel }}
                             </div>
 
-                            <span class="icon icon-angle-down"></span>
+                            <span class="icon icon-customer-type"></span>
 
                             <div class="custom-dropdown" v-if="isCustomerTypeOpen">
                                 <div class="dropdown-item" @click.stop="selectCustomerType(null, '')">Không chọn</div>
@@ -643,8 +643,8 @@ function selectCustomerType(id, name) {
     color: #1f2229;
 }
 
-.custom-select .icon-angle-down {
-    opacity: 0.4;
+.custom-select .icon-angle-down, .icon-customer-type {
+    opacity: 0.7;
 }
 
 .custom-dropdown {

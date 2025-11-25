@@ -56,9 +56,9 @@
         </div>
 
         <!-- Header right -->
-        <!-- <div class="header-right d-flex align-items-center">
-            <img src="../assets/images/avt.svg" alt="" class="avatar">
-        </div> -->
+        <div class="header-right d-flex align-items-center">
+            <img src="../assets/images/avt.png" alt="" class="avatar">
+        </div>
     </div>
 </template>
 

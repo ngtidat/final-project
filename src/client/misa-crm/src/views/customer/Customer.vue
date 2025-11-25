@@ -67,7 +67,7 @@
                     <span class="icon icon-export"></span>
                 </div>
                 <div>Xuất ra Excel</div>
-                <input type="file" ref="fileInput" style="display:none" accept=".csv">
+                <input type="file" style="display:none" accept=".csv">
             </div>
             <div class="tooltip wrap-icon d-flex justify-content-center align-items-center cursor-pointer">
                 <span class="icon icon-dot-menu"></span>
@@ -115,29 +115,31 @@
 
     <div v-if="importResult.visible" class="import-popup">
         <div class="popup-content">
-            <h3>Kết quả Import</h3>
+            <h2>Kết quả Import</h2>
             <p>Tổng số bản ghi: {{ importResult.total }}</p>
-            <p>Thành công: {{ importResult.success }}</p>
-            <p>Thất bại: {{ importResult.failed }}</p>
+            <p style="color: green;">Thành công: {{ importResult.success }}</p>
+            <p style="color: red;">Thất bại: {{ importResult.failed }}</p>
 
             <div v-if="importResult.errors.length">
                 <h4>Danh sách lỗi:</h4>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dòng lỗi</th>
-                            <th>Chi tiết</th>
-                        </tr>
-                    </thead>
 
-                    <tbody>
-                        <tr v-for="error in importResult.errors">
-                            <td>{{ error.rowIndex }}</td>
-                            <td>{{ error.error }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="error-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dòng lỗi</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr v-for="error in importResult.errors">
+                                <td>{{ error.rowIndex }}</td>
+                                <td>{{ error.error }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <button @click="importResult.visible = false" class="">Đóng</button>
@@ -718,6 +720,14 @@ function handleSortColumn(colKey) {
     overflow-y: auto;
 }
 
+.popup-content h2, h4 {
+    margin-bottom: 12px;
+}
+
+h4 {
+    margin-top: 8px;
+}
+
 .import-popup button {
     background-color: #4262F0;
     color: white;
@@ -740,6 +750,52 @@ function handleSortColumn(colKey) {
 .import-popup button:active {
     background-color: #233aa0;
 }
+
+/* Style bảng lỗi import */
+.import-popup table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border: 1px solid #e0e3eb;
+}
+
+.import-popup thead {
+    background-color: #f5f6fa;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.import-popup th {
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #d3d7de;
+}
+
+.import-popup td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+.import-popup tbody tr:hover {
+    background-color: #f0f2f4;
+}
+
+.import-popup .popup-content {
+    max-height: 75vh;
+    overflow-y: hidden;
+}
+
+.import-popup .error-table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e0e3eb;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
 
 /* Change customer type popup */
 .assign-popup {
