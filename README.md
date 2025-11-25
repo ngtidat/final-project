@@ -3,7 +3,7 @@
 ## 1. Giới thiệu
 Dự án này bao gồm **Web API ASP.NET Core** theo mô hình **Service + Repository Pattern** phục vụ cho hệ thống quản lý khách hàng.
 
-Source gồm 3 phần chính:
+Source gồm 2 phần chính:
 - **Backend (ASP.NET Core Web API)**
 - **Frontend (Vue 3)**
 
