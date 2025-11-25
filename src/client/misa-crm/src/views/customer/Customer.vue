@@ -83,7 +83,7 @@
         <MsTable ref="msTableRef" :columns="columns" :rows="customers" :total-count="totalRecords"
             :current-page="pageIndex" :page-size="pageSize" @edit-row="handleEditRow"
             @selection-change="handleSelection" @page-change="handlePageChange"
-            @page-size-change="handlePageSizeChange">
+            @page-size-change="handlePageSizeChange" @sort-column="handleSortColumn">
             <template #customerName="{ row, value }">
                 <div class="d-flex align-items-center gap-2">
                     <span style="color: #4262f0;">{{ value }}</span>
@@ -257,15 +257,15 @@ function handleSearchChange(newSearch) {
 
 // Table columns
 const columns = [
-    { key: 'customerType', label: 'Loại khách hàng', type: 'custom', sortable: true },
+    { key: 'customerType', label: 'Loại khách hàng', type: 'custom', sortable: false },
     { key: 'customerId', label: 'Mã khách hàng', type: 'custom', sortable: true },
     { key: 'customerName', label: 'Tên khách hàng', type: 'custom', sortable: true },
-    { key: 'customerTaxCode', label: 'Mã số thuế', type: 'text', sortable: true },
-    { key: 'shippingAddress', label: 'Địa chỉ (Giao hàng)', type: 'text', sortable: true },
-    { key: 'customerPhone', label: 'Điện thoại', type: 'custom', sortable: true },
+    { key: 'customerTaxCode', label: 'Mã số thuế', type: 'text', sortable: false },
+    { key: 'shippingAddress', label: 'Địa chỉ (Giao hàng)', type: 'text', sortable: false },
+    { key: 'customerPhone', label: 'Điện thoại', type: 'custom', sortable: false },
     { key: 'lastPurchaseDate', label: 'Ngày mua hàng gần nhất', type: 'date', sortable: true },
-    { key: 'purchaseItems', label: 'Hàng hóa đã mua', type: 'text',sortable: true },
-    { key: 'purchaseItemName', label: 'Tên hàng hóa đã mua', type: 'text', sortable: true }
+    { key: 'purchaseItems', label: 'Hàng hóa đã mua', type: 'text',sortable: false },
+    { key: 'purchaseItemName', label: 'Tên hàng hóa đã mua', type: 'text', sortable: false }
 ];
 
 const handleEditRow = (row) => {
@@ -466,6 +466,11 @@ function toggleCustomerTypeDropdown() {
 function filterByCustomerType(typeId, typeName) {
     customerTypeId.value = typeId;
     customerTypeName.value = typeName;
+}
+
+function handleSortColumn(colKey) {
+    sortColumn.value = colKey
+    sortDirection.value = sortDirection.value == 1 ? 0 : 1;
 }
 </script>
 

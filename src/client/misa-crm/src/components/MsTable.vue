@@ -11,14 +11,18 @@
                     </th>
 
                     <th v-for="col in columns" :key="col.key">
-                        {{ col.label }}
+                        <div class="d-flex align-items-center">
+                            {{ col.label }}
+                            <template v-if="col.sortable">
+                                <i class="icon icon-sort cursor-pointer" @click="emit('sort-column', col.key)"></i>
+                            </template>
+                        </div>
                     </th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr v-for="(row, rowIndex) in rows" :key="rowIndex" @dblclick="$emit('edit-row', row)"
-                    class="row-with-button">
+                <tr v-for="(row, rowIndex) in rows" :key="rowIndex" @dblclick="$emit('edit-row', row)">
                     <!-- Checkbox từng dòng -->
                     <td class="checkbox">
                         <input type="checkbox" :value="row" v-model="selectedRows" @click.stop />
@@ -38,8 +42,6 @@
                         </template>
                     </td>
 
-                    <!-- Nút Edit -->
-                    <!-- <button class="edit-btn" @click="$emit('edit-row', row)">Edit</button> -->
                 </tr>
             </tbody>
         </table>
@@ -138,7 +140,7 @@ const handleFormat = (value, type) => {
     }
 };
 
-const emit = defineEmits(['edit-row', 'selection-change', 'page-change', 'page-size-change'])
+const emit = defineEmits(['edit-row', 'selection-change', 'page-change', 'page-size-change', 'sort-column'])
 
 const selectAll = ref(false)
 const selectedRows = ref([])
@@ -338,27 +340,11 @@ input[type="checkbox"] {
     font-size: 14px;
 }
 
-.row-with-button {
-    position: relative;
+.icon-sort {
+    margin-left: 4px;
 }
 
-.edit-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: none;
-    padding: 4px 8px;
-    font-size: 13px;
-    background-color: #2a7efc;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    z-index: 1;
-}
-
-.row-with-button:hover .edit-btn {
-    display: inline-block;
+.icon-sort:hover {
+    background-color: #888;
 }
 </style>
