@@ -11,14 +11,15 @@ export const customerService = {
   getNewCustomerId: (id) => api.get(`/Customer/get-new-id`),
 
   // Tìm kiếm và phân trang
-  searchAndPaginate: (pageIndex, pageSize, strSearch, sortColumn, sortDirection) =>
+  searchAndPaginate: (pageIndex, pageSize, strSearch, sortColumn, sortDirection, customerTypeId) =>
     api.get('/Customer/search', {
       params: {
         pageIndex,
         pageSize,
         strSearch,
         sortColumn,
-        sortDirection
+        sortDirection,
+        customerTypeId
       }
     }),
 

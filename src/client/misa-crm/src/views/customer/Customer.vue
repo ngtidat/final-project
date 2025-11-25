@@ -1,11 +1,19 @@
 <template>
     <TheTopbar>
         <div class="topbar-left d-flex align-items-center">
-            <div class="other-option d-flex align-items-center">
+            <div class="other-option d-flex align-items-center" @click="toggleCustomerTypeDropdown">
                 <span class="icon icon-folder"></span>
-                <div class="other-option-title">Tất cả khách hàng</div>
+                <div class="other-option-title">{{ customerTypeName }}</div>
                 <span class="icon icon-angle-down"></span>
+                <div v-if="showCustomerTypeDropdown" class="customer-type-dropdown">
+                    <div class="dropdown-item" @click="filterByCustomerType(null, 'Tất cả khách hàng')">Tất cả khách hàng</div>
+                    <div v-for="ct in customerTypes" :key="ct.customerTypeId" class="dropdown-item"
+                        @click="filterByCustomerType(ct.customerTypeId, ct.customerTypeName)">
+                        {{ ct.customerTypeName }}
+                    </div>
+                </div>
             </div>
+
             <div class="update">Sửa</div>
             <div class="reload d-flex align-items-center justify-content-center" @click="handleReload">
                 <span class="icon icon-reload"></span>
@@ -152,7 +160,7 @@ import TheTopbar from '../../layouts/TheTopbar.vue';
 import MsTable from '../../components/MsTable.vue';
 import { customerService } from '../../services/customerService.js';
 import MsConfirmPopup from '../../components/MsConfirmPopup.vue';
-import { customerTypeService} from '../../services/customerTypeService.js';
+import { customerTypeService } from '../../services/customerTypeService.js';
 
 const router = useRouter()
 
@@ -169,6 +177,8 @@ const pageSize = ref(100);
 const strSearch = ref('');
 const sortColumn = ref(null);
 const sortDirection = ref(0);
+const customerTypeId = ref(null);
+const customerTypeName = ref('Tất cả khách hàng')
 
 const totalRecords = ref(0);
 const selectedItems = ref([])
@@ -186,7 +196,8 @@ const queryParams = computed(() => ({
     pageSize: pageSize.value,
     search: strSearch.value,
     sortColumn: sortColumn.value,
-    sortDirection: sortDirection.value
+    sortDirection: sortDirection.value,
+    customerTypeId: customerTypeId.value
 }));
 
 const fetchCustomers = async () => {
@@ -197,7 +208,8 @@ const fetchCustomers = async () => {
             queryParams.value.pageSize,
             queryParams.value.search,
             queryParams.value.sortColumn,
-            queryParams.value.sortDirection
+            queryParams.value.sortDirection,
+            queryParams.value.customerTypeId
         );
 
         customers.value = res.data.data.items;
@@ -209,11 +221,24 @@ const fetchCustomers = async () => {
     }
 };
 
+const fetchCustomerTypes = async () => {
+    try {
+        const res = await customerTypeService.getAll();
+        customerTypes.value = res.data.data || [];
+    } catch (err) {
+        console.error("Không load được customer type", err);
+        customerTypes.value = [];
+    }
+}
+
 watch(queryParams, () => {
     fetchCustomers();
 }, { deep: true });
 
-onMounted(fetchCustomers);
+onMounted(() => {
+    fetchCustomers();
+    fetchCustomerTypes();
+});
 
 // Event
 function handlePageChange(newPage) {
@@ -232,15 +257,15 @@ function handleSearchChange(newSearch) {
 
 // Table columns
 const columns = [
-    { key: 'customerType', label: 'Loại khách hàng', type: 'custom' },
-    { key: 'customerId', label: 'Mã khách hàng', type: 'custom' },
-    { key: 'customerName', label: 'Tên khách hàng', type: 'custom' },
-    { key: 'customerTaxCode', label: 'Mã số thuế', type: 'text' },
-    { key: 'shippingAddress', label: 'Địa chỉ (Giao hàng)', type: 'text' },
-    { key: 'customerPhone', label: 'Điện thoại', type: 'custom' },
-    { key: 'lastPurchaseDate', label: 'Ngày mua hàng gần nhất', type: 'date' },
-    { key: 'purchaseItems', label: 'Hàng hóa đã mua', type: 'text' },
-    { key: 'purchaseItemName', label: 'Tên hàng hóa đã mua', type: 'text' }
+    { key: 'customerType', label: 'Loại khách hàng', type: 'custom', sortable: true },
+    { key: 'customerId', label: 'Mã khách hàng', type: 'custom', sortable: true },
+    { key: 'customerName', label: 'Tên khách hàng', type: 'custom', sortable: true },
+    { key: 'customerTaxCode', label: 'Mã số thuế', type: 'text', sortable: true },
+    { key: 'shippingAddress', label: 'Địa chỉ (Giao hàng)', type: 'text', sortable: true },
+    { key: 'customerPhone', label: 'Điện thoại', type: 'custom', sortable: true },
+    { key: 'lastPurchaseDate', label: 'Ngày mua hàng gần nhất', type: 'date', sortable: true },
+    { key: 'purchaseItems', label: 'Hàng hóa đã mua', type: 'text',sortable: true },
+    { key: 'purchaseItemName', label: 'Tên hàng hóa đã mua', type: 'text', sortable: true }
 ];
 
 const handleEditRow = (row) => {
@@ -432,6 +457,16 @@ async function confirmAssign() {
     }
 }
 
+const showCustomerTypeDropdown = ref(false);
+
+function toggleCustomerTypeDropdown() {
+    showCustomerTypeDropdown.value = !showCustomerTypeDropdown.value;
+}
+
+function filterByCustomerType(typeId, typeName) {
+    customerTypeId.value = typeId;
+    customerTypeName.value = typeName;
+}
 </script>
 
 <style scoped>
@@ -447,7 +482,31 @@ async function confirmAssign() {
     font-weight: 600;
     color: #1f2229;
     padding-left: 12px;
+    position: relative;
 }
+
+.customer-type-dropdown {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    background: white;
+    border: 1px solid #d3d7de;
+    border-radius: 4px;
+    width: 200px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.customer-type-dropdown .dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.customer-type-dropdown .dropdown-item:hover {
+    background-color: #f0f2f4;
+}
+
 
 .other-option:hover {
     cursor: pointer;

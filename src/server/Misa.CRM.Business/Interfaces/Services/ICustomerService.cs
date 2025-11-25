@@ -22,7 +22,7 @@ public interface ICustomerService : IBaseService<Customer, CustomerDto, Customer
     /// <param name="sortColumn">Cột được sắp xếp</param>
     /// <param name="sortDirection">Hướng sắp xếp</param>
     /// <returns></returns>
-    public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection);
+    public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection, Guid? customerTypeId);
 
     /// <summary>
     /// Nhập dữ liệu từ file csv

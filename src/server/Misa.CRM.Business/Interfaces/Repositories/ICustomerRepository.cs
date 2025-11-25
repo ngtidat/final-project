@@ -28,7 +28,7 @@ public interface ICustomerRepository: IBaseRepository<Customer>
     /// Tổng số bản ghi
     /// Danh sách bản ghi
     /// </returns> <summary>
-    public PaginatedResult<Customer> SearchAndPaginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection);
+    public PaginatedResult<Customer> SearchAndPaginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection, Guid? customerTypeId);
 
     /// <summary>
     /// Nhập dữ liệu từ file csv vào DB

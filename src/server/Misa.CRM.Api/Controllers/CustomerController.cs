@@ -80,9 +80,9 @@ public class CustomerController : ControllerBase
     /// <param name="sortDirection">Hướng sắp xếp</param>
     /// <returns></returns>
     [HttpGet("search")]
-    public IActionResult Search(int pageIndex = 1, int pageSize = 100, string? strSearch = null, string? sortColumn = "c.created_at", int sortDirection = 1)
+    public IActionResult Search(int pageIndex = 1, int pageSize = 100, string? strSearch = null, string? sortColumn = "c.created_at", int sortDirection = 1, Guid? customerTypeId = null)
     {
-        var result = _customerService.Paginate(strSearch, pageIndex, pageSize, sortColumn, sortDirection);
+        var result = _customerService.Paginate(strSearch, pageIndex, pageSize, sortColumn, sortDirection, customerTypeId);
         var response = new ApiResponse<PaginatedResult<CustomerDto>>(
             data: result
         );

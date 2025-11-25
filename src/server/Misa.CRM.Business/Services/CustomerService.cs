@@ -89,9 +89,9 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
     }
 
 
-    public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection)
+    public PaginatedResult<CustomerDto> Paginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection, Guid? customerTypeId)
     {
-        var result = _customerRepository.SearchAndPaginate(search, pageIndex, pageSize, sortColumn, sortDirection);
+        var result = _customerRepository.SearchAndPaginate(search, pageIndex, pageSize, sortColumn, sortDirection, customerTypeId);
 
         return new PaginatedResult<CustomerDto>(
             result.PageIndex,

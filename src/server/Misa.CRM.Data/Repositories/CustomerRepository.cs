@@ -52,7 +52,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
         return result;
     }
 
-    public PaginatedResult<Customer> SearchAndPaginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection)
+    public PaginatedResult<Customer> SearchAndPaginate(string? search, int pageIndex, int pageSize, string? sortColumn, int sortDirection, Guid? customerTypeId)
     {
         using var connection = _context.CreateConnection();
 
@@ -64,6 +64,7 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
         parameters.Add("p_search", search ?? string.Empty, DbType.String);
         parameters.Add("p_sort_column", sortColumn, DbType.String);
         parameters.Add("p_sort_direction", sortDirection, DbType.Int16);
+        parameters.Add("p_customer_type_id", customerTypeId);
 
         using var multi = connection.QueryMultiple(
             "proc_paginate_customers",
