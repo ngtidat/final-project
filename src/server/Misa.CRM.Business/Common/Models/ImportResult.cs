@@ -11,5 +11,6 @@ public class ImportResult
 public class ImportErrorRow
 {
     public int RowIndex { get; set; }
+    public object? RowData { get; set; }
     public string Error { get; set; } = "";
 }

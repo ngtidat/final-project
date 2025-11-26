@@ -75,15 +75,24 @@ public class CustomerService : BaseService<Customer, CustomerDto, CustomerCreate
                 errors.Add(new ImportErrorRow
                 {
                     RowIndex = rowIndex,
-                    Error = ex.Message
+                    Error = ex.Message,
+                    RowData = new CustomerCreateUpdateDto
+                    {
+                        CustomerName = cols[0],
+                        CustomerPhone = cols[2],
+                        CustomerEmail = cols[3]
+                    }
                 });
             }
         }
 
         // Map DTO → Entity
         var customers = _mapper.Map<List<Customer>>(dtos);
-        
+
         var importResult = _customerRepository.Import(customers);
+
+        importResult.Failed += errors.Count;
+        importResult.Errors.AddRange(errors);
 
         return importResult;
     }

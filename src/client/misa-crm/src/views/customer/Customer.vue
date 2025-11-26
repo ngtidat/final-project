@@ -128,6 +128,9 @@
                         <thead>
                             <tr>
                                 <th>Dòng lỗi</th>
+                                <th>Tên khách hàng</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
                                 <th>Chi tiết</th>
                             </tr>
                         </thead>
@@ -135,6 +138,9 @@
                         <tbody>
                             <tr v-for="error in importResult.errors">
                                 <td>{{ error.rowIndex }}</td>
+                                <td>{{ error.rowData.customerName }}</td>
+                                <td>{{ error.rowData.customerEmail }}</td>
+                                <td>{{ error.rowData.customerPhone }}</td>
                                 <td>{{ error.error }}</td>
                             </tr>
                         </tbody>
@@ -295,6 +301,8 @@ const handleSelection = (rows) => {
 
 function handleReload() {
     pageIndex.value = 1;
+    sortColumn.value = null;
+    sortDirection.value = 0;
 
     selectedItems.value = [];
 
@@ -718,9 +726,11 @@ function handleSortColumn(colKey) {
     width: 500px;
     max-height: 70vh;
     overflow-y: auto;
+    min-width: max-content ;
 }
 
-.popup-content h2, h4 {
+.popup-content h2,
+h4 {
     margin-bottom: 12px;
 }
 
@@ -753,7 +763,6 @@ h4 {
 
 /* Style bảng lỗi import */
 .import-popup table {
-    width: 100%;
     border-collapse: collapse;
     font-size: 14px;
     border: 1px solid #e0e3eb;

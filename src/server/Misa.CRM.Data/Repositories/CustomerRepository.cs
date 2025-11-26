@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using Misa.CRM.Business.Common.Models;
+using Misa.CRM.Business.Dtos.Customer;
 using Misa.CRM.Business.Entities.Common;
 using Misa.CRM.Business.Interfaces.Repositories;
 using Misa.CRM.Data.SqlQueries;
@@ -191,6 +192,12 @@ public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
                     result.Errors.Add(new ImportErrorRow
                     {
                         RowIndex = index,
+                        RowData = new CustomerCreateUpdateDto
+                        {
+                            CustomerName = customer.CustomerName,
+                            CustomerPhone = customer.CustomerPhone,
+                            CustomerEmail = customer.CustomerEmail
+                        },
                         Error = errorMessage
                     });
                 }
