@@ -181,6 +181,7 @@ import MsTable from '../../components/MsTable.vue';
 import { customerService } from '../../services/customerService.js';
 import MsConfirmPopup from '../../components/MsConfirmPopup.vue';
 import { customerTypeService } from '../../services/customerTypeService.js';
+import { debounce } from 'lodash';
 
 const router = useRouter()
 
@@ -270,9 +271,13 @@ function handlePageSizeChange(newSize) {
     pageIndex.value = 1;
 }
 
-function handleSearchChange(newSearch) {
-    strSearch.value = newSearch;
+const debouncedSearch = debounce((text) => {
+    strSearch.value = text;
     pageIndex.value = 1;
+}, 400);
+
+function handleSearchChange(value) {
+    debouncedSearch(value);
 }
 
 // Table columns
@@ -726,7 +731,7 @@ function handleSortColumn(colKey) {
     width: 500px;
     max-height: 70vh;
     overflow-y: auto;
-    min-width: max-content ;
+    min-width: max-content;
 }
 
 .popup-content h2,
